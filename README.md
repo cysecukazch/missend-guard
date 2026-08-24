@@ -1,9 +1,7 @@
 # 誤送信ガード for Gmail（Missend Guard）
 
 Gmail の誤送信を「確認の手間を増やさずに」防ぐ Chrome 拡張機能（Manifest V3）。
-
-[Gmail送信前チェッカー](https://github.com/waterada/chrome-ex-gmail)（waterada 氏）の思想を受け継ぎつつ、
-ゼロから書き直した後継実装です（コードは全て新規のクリーンルーム実装・MIT ライセンス）。
+オープンソース（MIT ライセンス）です。
 
 ## なぜ「毎回確認」では誤送信が減らないのか
 
@@ -95,4 +93,4 @@ Gmail の難読化クラスに依存する箇所はすべて多段フォール�
 
 ## ライセンス
 
-MIT License。元拡張へのリスペクトを込めて。
+MIT License
