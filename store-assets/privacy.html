@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>プライバシーポリシー | 誤送信ガード for Gmail</title>
+<style>
+    body { font-family: -apple-system, "Hiragino Sans", "Noto Sans JP", Meiryo, sans-serif;
+           max-width: 720px; margin: 0 auto; padding: 40px 20px 80px; line-height: 1.9; color: #202124; }
+    h1 { font-size: 22px; } h2 { font-size: 17px; margin-top: 36px; } h3 { font-size: 15px; }
+    code { background: #f1f3f4; padding: 1px 6px; border-radius: 4px; font-size: .9em; }
+    hr { border: none; border-top: 1px solid #e0e0e0; margin: 48px 0; }
+    .muted { color: #5f6368; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>プライバシーポリシー</h1>
+<p class="muted">誤送信ガード for Gmail（Missend Guard for Gmail）／ 最終更新: 2026-08-24</p>
+
+<h2>扱うデータ</h2>
+<p>本拡張機能は、誤送信防止の判定のためにのみ、以下のデータを扱います。</p>
+<ul>
+    <li>送信時の宛先メールアドレス・表示名・ドメイン、および送信回数</li>
+    <li>件名・本文（判定のために読み取ります。<b>文章そのものは保存しません</b>。
+        ただし、宛名不一致の警告を確認して送信した場合は本文冒頭から抽出した宛名（氏名部分のみ）を、
+        スレッド判定のために件名から算出した復元不能なハッシュ値のみを保存します）</li>
+    <li>拡張機能の設定値</li>
+</ul>
+
+<h2>保存場所と送信先</h2>
+<ul>
+    <li>データは<b>お使いのブラウザ内（<code>chrome.storage.local</code>）に保存</b>されます。</li>
+    <li>端末間同期は<b>初期設定で有効</b>です。有効な間、学習データは
+        <b>ご自身の Google アカウントの Chrome 同期（<code>chrome.storage.sync</code>）</b>にも保存され、
+        同じアカウントでログインした別のPCと共有されます。これは Chrome 標準の同期機能であり、
+        データはユーザー自身のアカウントの範囲でのみ扱われます。設定「端末間で同期する」から
+        いつでも無効化できます。なお、宛先の表示名は同期されず、この端末内にのみ保存されます。</li>
+    <li><b>開発者や第三者のサーバーへデータが送信されることは一切ありません。</b>
+        本拡張機能は外部と通信するコードを含みません（要求する権限は <code>storage</code> のみ）。</li>
+</ul>
+
+<h2>ユーザーによる管理</h2>
+<ul>
+    <li>学習した宛先は設定画面からいつでも個別に削除（「忘れる」）または全消去できます。</li>
+    <li>端末間同期は設定からいつでもオフにできます。</li>
+    <li>拡張機能をアンインストールすると、保存データはすべて削除されます。</li>
+</ul>
+
+<h2>データの販売・第三者提供</h2>
+<p>行いません。データを広告・分析・その他いかなる目的にも利用しません。</p>
+
+<h2>お問い合わせ</h2>
+<p>本ポリシーに関するお問い合わせは、Chrome ウェブストアの掲載ページのサポート欄からお願いします。</p>
+
+<hr>
+
+<h1>Privacy Policy</h1>
+<p class="muted">Missend Guard for Gmail — Last updated: 2026-08-24</p>
+
+<h2>Data we process</h2>
+<ul>
+    <li>Recipient email addresses, display names, domains, and send counts</li>
+    <li>Subject and body text (read for detection; <b>the full text is never stored</b>.
+        When you confirm a greeting-mismatch warning and send, the greeting name extracted
+        from the top of the body (name part only) is stored; for thread detection, only an
+        irreversible hash derived from the subject is stored)</li>
+    <li>Extension settings</li>
+</ul>
+
+<h2>Where data lives</h2>
+<ul>
+    <li>Data is stored <b>in your browser (<code>chrome.storage.local</code>)</b>.</li>
+    <li>Cross-device sync is <b>enabled by default</b>. While enabled, learned data is also
+        stored in <b>your own Google account's Chrome Sync (<code>chrome.storage.sync</code>)</b>
+        and shared with your other PCs signed into the same account. It can be turned off
+        at any time in the options. Display names are never synced; they stay only on this
+        device.</li>
+    <li><b>Nothing is ever transmitted to the developer or any third party.</b>
+        The extension contains no networking code; the only requested permission is <code>storage</code>.</li>
+</ul>
+
+<h2>Your control</h2>
+<ul>
+    <li>Learned recipients can be individually forgotten or fully erased from the options page at any time.</li>
+    <li>Cross-device sync can be turned off at any time.</li>
+    <li>Uninstalling the extension deletes all stored data.</li>
+</ul>
+
+<h2>Selling or sharing data</h2>
+<p>We do not sell or share data, and we do not use it for advertising, analytics, or any other purpose.</p>
+
+<p class="muted">Gmail is a trademark of Google LLC. This extension is not endorsed by or affiliated with Google.</p>
+</body>
+</html>

@@ -1,0 +1,8 @@
+dist/
+.DS_Store
+node_modules/
+
+# vanity ID keys — 秘密鍵は絶対にコミットしない
+mail-key.private.pem
+mail-key.pub.b64
+*.pem

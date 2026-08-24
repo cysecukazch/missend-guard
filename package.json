@@ -1,0 +1,11 @@
+{
+  "name": "presend-guard-for-gmail",
+  "version": "1.0.0",
+  "private": true,
+  "type": "commonjs",
+  "description": "Smart misdelivery prevention for Gmail (Chrome extension, MV3)",
+  "scripts": {
+    "test": "node --test test/*.test.mjs",
+    "package": "./package.sh"
+  }
+}

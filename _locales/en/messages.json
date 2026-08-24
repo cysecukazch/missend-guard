@@ -1,0 +1,209 @@
+{
+  "extName": {
+    "message": "Missend Guard for Gmail"
+  },
+  "extDesc": {
+    "message": "Misdelivery prevention that gets smarter as you send. Confirms only when something looks off — first-time recipients, look-alike mix-ups, forgotten BCC — and never interrupts your normal sends."
+  },
+  "dlgTitle": {
+    "message": "Pre-send check"
+  },
+  "dlgSubAnomalies": {
+    "message": "Confirm $1 item(s)"
+  },
+  "dlgSubStrict": {
+    "message": "Review before sending"
+  },
+  "dlgAllRecipients": {
+    "message": "$1 recipient(s)"
+  },
+  "btnCancel": {
+    "message": "Back"
+  },
+  "btnSend": {
+    "message": "Send"
+  },
+  "ackHint": {
+    "message": "$1 left"
+  },
+  "ackAllDone": {
+    "message": "Ready to send"
+  },
+  "lblSubject": {
+    "message": "Subject"
+  },
+  "lblAttachments": {
+    "message": "Attachments"
+  },
+  "an_first_recipients_title": {
+    "message": "First-time recipient(s) ($1)"
+  },
+  "note_new_domain": {
+    "message": "First-time domain"
+  },
+  "note_lookalike_domain": {
+    "message": "Typo of \"$1\"?"
+  },
+  "note_lookalike_recipient": {
+    "message": "Similar to $1"
+  },
+  "an_known_lookalike_title": {
+    "message": "Unusual recipient"
+  },
+  "note_known_lookalike": {
+    "message": "You usually email $1 ($2×) · this address $3×"
+  },
+  "an_greeting_mismatch_title": {
+    "message": "\"$1\" is greeted but not a recipient"
+  },
+  "an_greeting_mismatch_suggest_title": {
+    "message": "\"$1\" is greeted but not a recipient"
+  },
+  "an_greeting_mismatch_suggest_detail": {
+    "message": "Did you mean $2, whom you have emailed before?"
+  },
+  "an_new_combo_title": {
+    "message": "First-time combination of organizations"
+  },
+  "an_new_combo_detail": {
+    "message": "$1"
+  },
+  "an_thread_new_title": {
+    "message": "New to this subject thread ($1)"
+  },
+  "an_many_visible_title": {
+    "message": "$1 external recipients visible"
+  },
+  "an_many_visible_detail": {
+    "message": "Use BCC for bulk mail"
+  },
+  "an_read_failed_title": {
+    "message": "Could not read recipients"
+  },
+  "an_read_failed_detail": {
+    "message": "Verify visually before sending"
+  },
+  "toastOkTo": {
+    "message": "$1"
+  },
+  "toastOkMore": {
+    "message": "$1 +$2"
+  },
+  "opt_title": {
+    "message": "Missend Guard"
+  },
+  "opt_section_rules": {
+    "message": "Checks"
+  },
+  "opt_rule_first": {
+    "message": "Confirm first-time recipients"
+  },
+  "opt_rule_lookalike": {
+    "message": "Warn about lookalike addresses"
+  },
+  "opt_rule_known": {
+    "message": "Warn about unusual recipients"
+  },
+  "opt_rule_greeting": {
+    "message": "Warn when greeting doesn't match"
+  },
+  "opt_rule_thread": {
+    "message": "Warn about recipients new to a thread"
+  },
+  "opt_rule_combo": {
+    "message": "Warn about new org combinations"
+  },
+  "opt_rule_many": {
+    "message": "Suggest BCC for many external recipients"
+  },
+  "opt_skip_internal": {
+    "message": "Skip checks for your own domain"
+  },
+  "opt_skip_internal_note": {
+    "message": "Disabled for free-mail accounts (Gmail etc.)"
+  },
+  "opt_section_mode": {
+    "message": "Behavior"
+  },
+  "opt_strict": {
+    "message": "Always confirm (strict mode)"
+  },
+  "opt_learn": {
+    "message": "Learn recipients"
+  },
+  "opt_section_data": {
+    "message": "Data"
+  },
+  "opt_stats": {
+    "message": "$1 learned / $2 sends"
+  },
+  "opt_clear": {
+    "message": "Clear learned data"
+  },
+  "opt_clear_confirm": {
+    "message": "Erase all learned data?"
+  },
+  "opt_privacy": {
+    "message": "Data is stored on this device. Cross-device sync is on by default, so learned data is also placed in your own Google account’s Chrome Sync and shared with your other PCs (can be turned off below). Never sent to the developer or any third party."
+  },
+  "opt_saved": {
+    "message": "Saved"
+  },
+  "opt_help": {
+    "message": "Full feature specification"
+  },
+  "an_greeting_mismatch_detail": {
+    "message": "Typo of $2?"
+  },
+  "opt_sync": {
+    "message": "Sync across devices"
+  },
+  "opt_sync_note": {
+    "message": "Share learned data with your other PCs (same Google account, Chrome sync on)"
+  },
+  "opt_sync_info": {
+    "message": "Synced: $1 recipients / ~$2KB (not synced: $3)"
+  },
+  "andMore": {
+    "message": "and $1 more"
+  },
+  "reassureConfirm": {
+    "message": "Once you confirm and send, this recipient won’t be flagged again."
+  },
+  "reassureEarly": {
+    "message": "These checks get rarer as you use it (only the first few days are chatty)."
+  },
+  "linkSettings": {
+    "message": "Settings"
+  },
+  "linkHelp": {
+    "message": "About this check"
+  },
+  "opt_showToast": {
+    "message": "Show a notification when sending"
+  },
+  "opt_section_learned": {
+    "message": "Learned recipients"
+  },
+  "opt_undo": {
+    "message": "Undo last learning"
+  },
+  "opt_learned_hint": {
+    "message": "Press “Forget” to make a recipient “first-time” again (remove a mistakenly learned address)."
+  },
+  "opt_forget": {
+    "message": "Forget"
+  },
+  "opt_search_recipients": {
+    "message": "Search recipients…"
+  },
+  "opt_sync_status_ok": {
+    "message": ""
+  },
+  "opt_sync_status_error": {
+    "message": "Sync error: $1"
+  },
+  "opt_local_error": {
+    "message": "Save is failing: $1"
+  }
+}

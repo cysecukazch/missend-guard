@@ -1,0 +1,209 @@
+{
+  "extName": {
+    "message": "誤送信ガード for Gmail"
+  },
+  "extDesc": {
+    "message": "送るほど賢くなる誤送信防止。初めての宛先・取り違え・BCC忘れなど異常があるときだけ確認し、いつもの送信は一切邪魔しません。履歴は自分のChrome内にのみ保存。"
+  },
+  "dlgTitle": {
+    "message": "送信前チェック"
+  },
+  "dlgSubAnomalies": {
+    "message": "$1件を確認してください"
+  },
+  "dlgSubStrict": {
+    "message": "内容を確認してください"
+  },
+  "dlgAllRecipients": {
+    "message": "宛先 $1件"
+  },
+  "btnCancel": {
+    "message": "戻る"
+  },
+  "btnSend": {
+    "message": "送信"
+  },
+  "ackHint": {
+    "message": "残り $1件"
+  },
+  "ackAllDone": {
+    "message": "送信できます"
+  },
+  "lblSubject": {
+    "message": "件名"
+  },
+  "lblAttachments": {
+    "message": "添付"
+  },
+  "an_first_recipients_title": {
+    "message": "初めての宛先（$1件）"
+  },
+  "note_new_domain": {
+    "message": "初めてのドメイン"
+  },
+  "note_lookalike_domain": {
+    "message": "「$1」の打ち間違い？"
+  },
+  "note_lookalike_recipient": {
+    "message": "$1 と酷似"
+  },
+  "an_known_lookalike_title": {
+    "message": "普段と違う宛先"
+  },
+  "note_known_lookalike": {
+    "message": "普段は $1（$2回）・この宛先は $3回"
+  },
+  "an_greeting_mismatch_title": {
+    "message": "宛名「$1」が宛先にいません"
+  },
+  "an_greeting_mismatch_suggest_title": {
+    "message": "宛名「$1」が宛先にいません"
+  },
+  "an_greeting_mismatch_suggest_detail": {
+    "message": "過去の宛先 $2 宛ての間違い？"
+  },
+  "an_new_combo_title": {
+    "message": "初めての組織の組み合わせ"
+  },
+  "an_new_combo_detail": {
+    "message": "$1"
+  },
+  "an_thread_new_title": {
+    "message": "この件名では初めての宛先（$1件）"
+  },
+  "an_many_visible_title": {
+    "message": "外部の宛先が $1件"
+  },
+  "an_many_visible_detail": {
+    "message": "一斉送信は BCC を推奨"
+  },
+  "an_read_failed_title": {
+    "message": "宛先を読み取れません"
+  },
+  "an_read_failed_detail": {
+    "message": "目視で確認してください"
+  },
+  "toastOkTo": {
+    "message": "$1"
+  },
+  "toastOkMore": {
+    "message": "$1 ほか$2件"
+  },
+  "opt_title": {
+    "message": "誤送信ガード"
+  },
+  "opt_section_rules": {
+    "message": "チェック機能"
+  },
+  "opt_rule_first": {
+    "message": "初めての宛先を確認"
+  },
+  "opt_rule_lookalike": {
+    "message": "似たアドレスを警告"
+  },
+  "opt_rule_known": {
+    "message": "普段と違う宛先を警告"
+  },
+  "opt_rule_greeting": {
+    "message": "宛名と宛先の不一致を警告"
+  },
+  "opt_rule_thread": {
+    "message": "件名スレッドの新しい宛先を警告"
+  },
+  "opt_rule_combo": {
+    "message": "初めての組織の組み合わせを警告"
+  },
+  "opt_rule_many": {
+    "message": "外部宛先が多いとき BCC を提案"
+  },
+  "opt_skip_internal": {
+    "message": "自社ドメイン宛はチェックしない"
+  },
+  "opt_skip_internal_note": {
+    "message": "フリーメール（Gmail など）のアカウントでは無効"
+  },
+  "opt_section_mode": {
+    "message": "動作"
+  },
+  "opt_strict": {
+    "message": "毎回確認（厳格モード）"
+  },
+  "opt_learn": {
+    "message": "宛先を学習"
+  },
+  "opt_section_data": {
+    "message": "データ"
+  },
+  "opt_stats": {
+    "message": "学習済 $1件/送信 $2回"
+  },
+  "opt_clear": {
+    "message": "学習データ消去"
+  },
+  "opt_clear_confirm": {
+    "message": "学習データをすべて消去しますか？"
+  },
+  "opt_privacy": {
+    "message": "データはこの端末に保存されます。端末間同期は既定でONのため、ご自身のGoogleアカウントのChrome同期にも載り別PCと共有されます（設定でOFF可）。開発者・第三者への送信はありません。"
+  },
+  "opt_saved": {
+    "message": "保存しました"
+  },
+  "opt_help": {
+    "message": "機能の詳細仕様"
+  },
+  "an_greeting_mismatch_detail": {
+    "message": "$2 の打ち間違い？"
+  },
+  "opt_sync": {
+    "message": "端末間で同期する"
+  },
+  "opt_sync_note": {
+    "message": "同じ Google アカウント・Chrome同期ONの別PCと学習データを共有（Chromeの同期を利用）"
+  },
+  "opt_sync_info": {
+    "message": "同期中: 宛先 $1件 / 約$2KB（未同期 $3件）"
+  },
+  "andMore": {
+    "message": "ほか $1 件"
+  },
+  "reassureConfirm": {
+    "message": "確認して送信すると、この宛先は次回から表示されません。"
+  },
+  "reassureEarly": {
+    "message": "確認して送るほど、この確認は減っていきます（最初の数日だけ多めです）。"
+  },
+  "linkSettings": {
+    "message": "設定"
+  },
+  "linkHelp": {
+    "message": "この確認について"
+  },
+  "opt_showToast": {
+    "message": "送信時の通知を表示"
+  },
+  "opt_section_learned": {
+    "message": "学習した宛先"
+  },
+  "opt_undo": {
+    "message": "直近の学習を取り消す"
+  },
+  "opt_learned_hint": {
+    "message": "「忘れる」を押すと「初めての宛先」に戻せます（誤って覚えた宛先の削除）。"
+  },
+  "opt_forget": {
+    "message": "忘れる"
+  },
+  "opt_search_recipients": {
+    "message": "宛先を検索…"
+  },
+  "opt_sync_status_ok": {
+    "message": ""
+  },
+  "opt_sync_status_error": {
+    "message": "同期エラー: $1"
+  },
+  "opt_local_error": {
+    "message": "保存に失敗しています: $1"
+  }
+}

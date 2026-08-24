@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<!-- ストア用スクリーンショット撮影専用: chrome API をスタブして options.html を描画する。
+     test/ と options/ は同階層のため、options.html 内の ../src ../_locales 参照はそのまま解決する -->
+<!-- charset 宣言は必須: これがないとブラウザが Windows-1252 と誤判定し、
+     下のインラインスクリプト内の日本語（学習名 田中/佐藤/鈴木）が文字化けする -->
+<meta charset="UTF-8">
+<script>
+(function () {
+    // i18n: ja を同期 XHR で読み込む
+    const xhr = new XMLHttpRequest();
+    xhr.open('GET', '../_locales/ja/messages.json', false);
+    xhr.send();
+    const dict = JSON.parse(xhr.responseText);
+    // 見栄えのするダミー学習データ
+    const now = Date.now();
+    const seeded = { psg_v1: {
+        recipients: {
+            'tanaka@example.co.jp': { c: 42, t: now, n: '田中' },
+            'sato@sample-corp.example': { c: 18, t: now - 100, n: '佐藤' },
+            'suzuki@demo-inc.example': { c: 7, t: now - 200, n: '鈴木' }
+        },
+        domains: { 'example.co.jp': { c: 42, t: now }, 'sample-corp.example': { c: 18, t: now } },
+        combos: {}, pairAcks: {}, greetAcks: {}, threads: {},
+        stats: { sends: 67, dialogs: 5, autoPass: 62 }, settings: {}
+    } };
+    // 注: ヘッドレス撮影は load 直後に走るため、コールバックは同期即時にする
+    // （await はマイクロタスクのみになり、スクリーンショット時点で UI が確定する）
+    window.chrome = {
+        runtime: { lastError: null },
+        i18n: { getMessage: (k, subs) => {
+            let m = (dict[k] || {}).message || '';
+            (Array.isArray(subs) ? subs : subs != null ? [subs] : []).forEach((v, i) => {
+                m = m.replace(new RegExp('\\$' + (i + 1), 'g'), v);
+            });
+            return m;
+        } },
+        storage: {
+            local: {
+                get: (q, cb) => cb(Object.assign({}, seeded)),
+                set: (o, cb) => { cb && cb(); },
+                remove: (k, cb) => { cb && cb(); }
+            },
+            sync: {
+                get: (q, cb) => cb({}),
+                set: (o, cb) => { cb && cb(); },
+                remove: (k, cb) => { cb && cb(); }
+            },
+            onChanged: { addListener: () => {} }
+        }
+    };
+    // options.html を丸ごと描画（options.js だけは options/ 相対なのでパスを補正）
+    const page = new XMLHttpRequest();
+    page.open('GET', '../options/options.html', false);
+    page.send();
+    document.write(page.responseText.replace('src="options.js"', 'src="../options/options.js"'));
+    // ヘッドレス撮影では非同期 init の描画反映が間に合わないことがあるため、
+    // 撮影用に既定の表示状態（全トグルON・閾値5）をロード後に明示的に確定させる
+    window.addEventListener('load', () => {
+        for (const el of document.querySelectorAll('.sw input[type="checkbox"]')) el.checked = true;
+        const strict = document.getElementById('strictMode');
+        if (strict) strict.checked = false; // 厳格モードは既定OFF（実際の初期状態を正しく見せる）
+        const th = document.getElementById('manyVisibleThreshold');
+        if (th) th.value = 5;
+    });
+})();
+</script>

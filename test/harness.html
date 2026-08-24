@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>PreSend Guard — テストハーネス</title>
+<style>
+    body { font-family: 'Hiragino Sans', Meiryo, sans-serif; margin: 0; padding: 20px; background: #eee; }
+    h1 { font-size: 18px; }
+    h2 { font-size: 14px; margin: 24px 0 8px; }
+    .panel { background: #fff; border: 1px solid #ccc; border-radius: 8px; padding: 14px 18px; margin: 10px 0; }
+    .controls button { margin: 3px 4px 3px 0; padding: 6px 12px; font-size: 12.5px; cursor: pointer; }
+    #status { font-weight: bold; color: #0a7; min-height: 1.4em; }
+    #sent-log { font-family: monospace; font-size: 12px; color: #333; white-space: pre-wrap; }
+    /* --- Gmail コンポーズの再現（構造のみ） --- */
+    .compose { border: 2px solid #888; border-radius: 8px; background: #fafafa; padding: 12px; }
+    .chip { display: inline-block; background: #e8eaed; border-radius: 12px; padding: 2px 10px; margin: 2px; font-size: 12px; }
+    .fieldrow { margin: 4px 0; }
+    .fieldrow .lab { display: inline-block; width: 36px; color: #555; font-size: 12px; }
+    input[name="subjectbox"] { width: 60%; padding: 4px 8px; margin: 6px 0; }
+    [contenteditable] { border: 1px solid #ddd; background: #fff; min-height: 60px; padding: 8px; font-size: 13px; }
+    .btC { margin-top: 10px; }
+    .T-I.aoO { display: inline-block; background: #1a73e8; color: #fff; border-radius: 16px; padding: 8px 20px; cursor: pointer; user-select: none; font-size: 13px; }
+</style>
+</head>
+<body>
+<h1>PreSend Guard テストハーネス（Gmail DOM 模擬）</h1>
+
+<div class="panel controls">
+    <h2>シナリオ（宛先・本文を書き換えます）</h2>
+    <button data-scn="clean">既知の宛先のみ（素通し想定）</button>
+    <button data-scn="first">初めての宛先</button>
+    <button data-scn="lookalike">取り違え疑い（saito↔sato）</button>
+    <button data-scn="typo">ドメインtypo（sakura-trada.example）</button>
+    <button data-scn="combo">組織の組み合わせ（A社+B社）</button>
+    <button data-scn="many">To に外部6件（BCC推奨）</button>
+    <button data-scn="manygmail">gmailアカウントから gmail宛7件（BCC推奨・バグ回帰）</button>
+    <button data-scn="knownmix">既知同士の取り違え（saito 1回 vs sato 50回）</button>
+    <button data-scn="greetmix">宛名ミスマッチ（本文「佐藤様」宛先「斉藤」）</button>
+    <button data-scn="threadmix">スレッドに新顔（Re:見積 + 山田さん追加）</button>
+    <button data-scn="internal">社内宛・初めて（自社ドメイン除外で素通し想定）</button>
+    <h2>履歴操作</h2>
+    <button id="seed">履歴に学習済みデータを注入</button>
+    <button id="reset">履歴をクリア</button>
+    <button id="dump">履歴をコンソールに表示</button>
+    <div id="status"></div>
+    <div id="sent-log"></div>
+</div>
+
+<!-- ===== Gmail コンポーズ再現: ポップアップ形式 ===== -->
+<div role="dialog" aria-labelledby="x" class="panel">
+    <h2>コンポーズ（div[role=dialog] 形式）</h2>
+    <div class="compose">
+        <div class="fieldrow"><span class="lab">To</span><div name="to" style="display:inline-block"></div></div>
+        <div class="fieldrow"><span class="lab">Cc</span><div name="cc" style="display:inline-block"></div></div>
+        <div class="fieldrow"><span class="lab">Bcc</span><div name="bcc" style="display:inline-block"></div></div>
+        <input name="subjectbox" value="お打ち合わせの件">
+        <div role="textbox" contenteditable="true" aria-label="メール本文">いつもお世話になっております。<div class="gmail_quote">（引用: 添付をありがとうございました)</div></div>
+        <div class="btC">
+            <div id="send-btn" class="T-I J-J5-Ji aoO" role="button" tabindex="1" data-tooltip="送信 ‪(⌘Enter)‬">送信</div>
+        </div>
+    </div>
+</div>
+
+<script>
+/* テスト専用: ダイアログの closed Shadow を open にして自動操作できるようにする。
+   本番拡張は隔離ワールドのためこのフラグは立たず、常に closed で動作する。 */
+window.PSG_TEST_OPEN_SHADOW = true;
+window.PSG_TEST_SYNC_DEBOUNCE = 80; // テスト用に同期書込みデバウンスを短縮（本番は8s）
+/* ---- chrome API スタブ（local と sync を別々に localStorage 永続化。
+       sync は「クラウド」を模し、__resetLocalKeepSync() で別PCを再現できる） ---- */
+const __messages = {};
+const __listeners = [];
+function makeArea(lsKey) {
+    let data = JSON.parse(localStorage.getItem(lsKey) || '{}');
+    const persist = () => localStorage.setItem(lsKey, JSON.stringify(data));
+    const areaName = lsKey.endsWith('sync') ? 'sync' : 'local';
+    const fire = (changes) => __listeners.forEach(fn => { try { fn(changes, areaName); } catch (e) {} });
+    return {
+        __raw: () => data,
+        __reset: () => { data = {}; persist(); },
+        get: (query, cb) => setTimeout(() => {
+            let out = {};
+            if (query == null) out = Object.assign({}, data);
+            else if (Array.isArray(query)) query.forEach(k => { if (k in data) out[k] = data[k]; });
+            else if (typeof query === 'object') Object.keys(query).forEach(k => { out[k] = (k in data) ? data[k] : query[k]; });
+            else out[query] = data[query];
+            cb(out);
+        }, 0),
+        set: (obj, cb) => {
+            const changes = {};
+            for (const k of Object.keys(obj)) { changes[k] = { oldValue: data[k], newValue: obj[k] }; data[k] = obj[k]; }
+            persist(); cb && setTimeout(cb, 0); setTimeout(() => fire(changes), 0);
+        },
+        remove: (keys, cb) => {
+            keys = Array.isArray(keys) ? keys : [keys];
+            const changes = {};
+            for (const k of keys) { if (k in data) { changes[k] = { oldValue: data[k] }; delete data[k]; } }
+            persist(); cb && setTimeout(cb, 0); setTimeout(() => fire(changes), 0);
+        }
+    };
+}
+const __local = makeArea('psg_harness');
+const __sync = makeArea('psg_harness_sync');
+// 別PCシミュレート: local を空にして sync（クラウド）だけ残す
+window.__resetLocalKeepSync = () => { __local.__reset(); localStorage.removeItem('psg_harness'); };
+window.__dumpSync = () => __sync.__raw();
+window.chrome = {
+    runtime: { lastError: null },
+    storage: {
+        local: __local,
+        sync: __sync,
+        onChanged: { addListener: (fn) => __listeners.push(fn) }
+    },
+    i18n: {
+        getMessage: (key, subs) => {
+            let m = __messages[key] ? __messages[key].message : '';
+            if (!m) return '';
+            (Array.isArray(subs) ? subs : subs != null ? [subs] : []).forEach((v, i) => {
+                m = m.replace(new RegExp('\\$' + (i + 1), 'g'), v);
+            });
+            return m;
+        }
+    }
+};
+fetch('../_locales/ja/messages.json').then(r => r.json()).then(d => Object.assign(__messages, d));
+
+/* ---- ハーネス用ユーティリティ ---- */
+function setChips(field, list) {
+    const area = document.querySelector(`div[name="${field}"]`);
+    area.innerHTML = '';
+    for (const item of list) {
+        const chip = document.createElement('div');
+        chip.className = 'chip';
+        chip.setAttribute('data-hovercard-id', item.email);
+        chip.setAttribute('data-name', item.name || '');
+        chip.textContent = (item.name ? item.name + ' ' : '') + item.email;
+        area.appendChild(chip);
+    }
+}
+function setSubject(s) { document.querySelector('input[name="subjectbox"]').value = s; }
+function setBody(s) {
+    // 実 Gmail と同じ DOM 構造で組む: 1行目はテキストノード、以降は <div>行</div>
+    // （textContent では改行が消える構造。拡張の getBodyText がこれを復元できることを検証する）
+    const lines = s.split('\n');
+    const html = lines[0] + lines.slice(1).map(l => `<div>${l || '<br>'}</div>`).join('');
+    document.querySelector('[contenteditable]').innerHTML =
+        html + '<div class="gmail_quote">（引用: 過去メールに添付の話）</div>';
+}
+
+const SCENARIOS = {
+    clean: () => {
+        setChips('to', [{ email: 'taro@customer-a.example', name: '山田太郎' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('定例のご連絡'); setBody('いつもお世話になっております。');
+    },
+    first: () => {
+        setChips('to', [{ email: 'shinki@newcompany.example', name: '新規様' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('はじめまして'); setBody('お世話になります。');
+    },
+    lookalike: () => {
+        setChips('to', [{ email: 'saito@customer-a.example', name: '斎藤様' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('ご確認'); setBody('よろしくお願いします。');
+    },
+    typo: () => {
+        setChips('to', [{ email: 'yamada@sakura-trada.example' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('ご連絡'); setBody('よろしくお願いします。');
+    },
+    combo: () => {
+        setChips('to', [{ email: 'taro@customer-a.example', name: 'A社 山田' }]);
+        setChips('cc', [{ email: 'jiro@customer-b.example', name: 'B社 佐藤' }]);
+        setChips('bcc', []);
+        setSubject('お見積り'); setBody('各位よろしくお願いします。');
+    },
+    many: () => {
+        setChips('to', [1,2,3,4,5,6].map(i => ({ email: `user${i}@partner${i}.example` })));
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('一斉のご案内'); setBody('皆さまへ。');
+    },
+    manygmail: () => {
+        // 注: このシナリオのみ実在の gmail.com を使う。FREEMAIL 判定（フリーメール From は
+        // 自社ドメイン除外を無効化する）の回帰テストにはリストに実在するドメインが必要なため。
+        // ハーネスは送信を一切行わないので実アドレスへの影響はない。他のシナリオは
+        // RFC 2606 予約 TLD（.example）のみを使用する。
+        document.title = '受信トレイ - me@gmail.com - Gmail (harness)'; // From をフリーメールに
+        setChips('to', [1,2,3,4,5,6,7].map(i => ({ email: `friend${i}@gmail.com` })));
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('同窓会のご案内'); setBody('皆さまへ。');
+    },
+    knownmix: () => {
+        setChips('to', [{ email: 'saito@customer-a.example', name: '斉藤' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('ご確認のお願い'); setBody('斉藤様\n\nご確認をお願いいたします。');
+    },
+    greetmix: () => {
+        setChips('to', [{ email: 'saito@customer-a.example', name: '斉藤' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('ご確認のお願い'); setBody('佐藤様\n\nいつもお世話になっております。');
+    },
+    internal: () => {
+        setChips('to', [{ email: 'shinjin@mycompany.example', name: '新人' }]);
+        setChips('cc', []); setChips('bcc', []);
+        setSubject('歓迎会の件'); setBody('新人様\n\nよろしくお願いします。');
+    },
+    threadmix: () => {
+        setChips('to', [
+            { email: 'sato@customer-a.example', name: '佐藤' },
+            { email: 'tanaka@customer-a.example', name: '田中' }
+        ]);
+        setChips('cc', [{ email: 'yamada@customer-a.example', name: '山田' }]);
+        setChips('bcc', []);
+        setSubject('Re: お見積りの件'); setBody('各位\n\n先日の続きです。');
+    }
+};
+
+// 各シナリオの前に From を既定（自社ドメイン）へ戻す。manygmail は自前で上書きする
+for (const key of Object.keys(SCENARIOS)) {
+    const fn = SCENARIOS[key];
+    SCENARIOS[key] = () => {
+        document.title = '受信トレイ - me@mycompany.example - Gmail (harness)';
+        fn();
+    };
+}
+
+document.querySelectorAll('[data-scn]').forEach(btn => {
+    btn.addEventListener('click', () => {
+        SCENARIOS[btn.dataset.scn]();
+        document.getElementById('status').textContent = 'シナリオ: ' + btn.textContent;
+    });
+});
+
+document.getElementById('seed').addEventListener('click', () => {
+    const threadKey = PSG_RiskEngine.subjectKey('Re: お見積りの件');
+    chrome.storage.local.set({ psg_v1: {
+        recipients: {
+            'taro@customer-a.example': { c: 12, t: Date.now(), n: '山田太郎' },
+            'sato@customer-a.example': { c: 50, t: Date.now(), n: '佐藤' },
+            'saito@customer-a.example': { c: 1, t: Date.now(), n: '斉藤' },
+            'tanaka@customer-a.example': { c: 10, t: Date.now(), n: '田中' },
+            'yamada@customer-a.example': { c: 8, t: Date.now(), n: '山田' }
+        },
+        domains: { 'customer-a.example': { c: 60, t: Date.now() }, 'sakura-trade.example': { c: 20, t: Date.now() } },
+        combos: {},
+        pairAcks: {},
+        greetAcks: {},
+        threads: { [threadKey]: { r: ['sato@customer-a.example', 'tanaka@customer-a.example'], t: Date.now() } },
+        stats: { sends: 60, dialogs: 2, autoPass: 58 },
+        settings: {}
+    } }, () => location.reload());
+});
+document.getElementById('reset').addEventListener('click', () => chrome.storage.local.remove('psg_v1', () => location.reload()));
+document.getElementById('dump').addEventListener('click', () => console.log(JSON.stringify(__local.__raw(), null, 2)));
+
+/* 実際の送信のかわり */
+document.getElementById('send-btn').addEventListener('click', () => {
+    const log = document.getElementById('sent-log');
+    log.textContent += `[${new Date().toLocaleTimeString()}] ✉ 送信が実行されました\n`;
+});
+
+/* 差出人推定用（document.title フォールバック） */
+document.title = '受信トレイ - me@mycompany.example - Gmail (harness)';
+
+/* ---- 撮影モード（ストア用スクリーンショット生成; ?shot=<scenario>[-acked]） ----
+   ヘッドレス Chrome から使う。ハーネスのUIを隠し、シードを注入してシナリオを自動実行する */
+const __shot = new URLSearchParams(location.search).get('shot');
+if (__shot) {
+    const style = document.createElement('style');
+    style.textContent = `
+        html { min-height: 100%; background: linear-gradient(160deg, #f8fafd 0%, #e8eef9 100%) !important; }
+        body { background: transparent !important; min-height: 100vh; margin: 0 !important; }
+        h1, .panel.controls { display: none !important; }
+        /* コンポーズ窓は残して実利用イメージの背景にする（ダイアログが手前に重なる） */
+        .panel { max-width: 700px; margin: 56px auto !important; border: none !important;
+                 border-radius: 12px; box-shadow: 0 2px 10px rgba(60,64,67,.18); }
+        .panel > h2 { display: none !important; }
+        .compose { border: none !important; background: #fff !important; }
+    `;
+    document.head.appendChild(style);
+    window.addEventListener('load', () => {
+        const threadKey = PSG_RiskEngine.subjectKey('Re: お見積りの件');
+        chrome.storage.local.set({ psg_v1: {
+            recipients: {
+                'sato@customer-a.example': { c: 50, t: Date.now(), n: '佐藤' },
+                'saito@customer-a.example': { c: 1, t: Date.now(), n: '斉藤' },
+                'tanaka@customer-a.example': { c: 10, t: Date.now(), n: '田中' }
+            },
+            domains: { 'customer-a.example': { c: 60, t: Date.now() }, 'sakura-trade.example': { c: 20, t: Date.now() } },
+            combos: {}, pairAcks: {}, greetAcks: {},
+            threads: { [threadKey]: { r: ['sato@customer-a.example', 'tanaka@customer-a.example'], t: Date.now() } },
+            stats: { sends: 60, dialogs: 2, autoPass: 58 }, settings: {}
+        } }, () => {
+            setTimeout(() => {
+                const scn = __shot.replace(/-(acked|end)$/, '');
+                if (SCENARIOS[scn]) SCENARIOS[scn]();
+                document.getElementById('send-btn').click();
+                const withDialog = (fn) => setTimeout(() => {
+                    const host = [...document.querySelectorAll('div[id^="psg-host-"]')]
+                        .find(h => h.shadowRoot && h.shadowRoot.querySelector('.modal'));
+                    if (host) fn(host.shadowRoot);
+                }, 900); // 400ms ガード経過後に操作
+                if (__shot.endsWith('-acked')) {
+                    withDialog(root => root.querySelectorAll('.card').forEach(c => c.click()));
+                } else if (__shot.endsWith('-end')) {
+                    // 最後のカード（例: BCC提案）を写すためダイアログ内を末尾までスクロール
+                    withDialog(root => { const b = root.querySelector('.body'); if (b) b.scrollTop = b.scrollHeight; });
+                }
+            }, 400);
+        });
+    });
+}
+</script>
+
+<!-- 拡張本体（content script と同じ読み込み順）。
+     ブラウザキャッシュで古い版が実行されるのを防ぐため、常にタイムスタンプ付きで同期読込する -->
+<script>
+(function () {
+    var t = Date.now();
+    var files = ['risk-engine.js', 'gmail-dom.js', 'sync-codec.js', 'history-store.js', 'ui.js', 'content.js'];
+    for (var i = 0; i < files.length; i++) {
+        document.write('<script src="../src/' + files[i] + '?t=' + t + '"><\/script>');
+    }
+})();
+</script>
+<script>SCENARIOS.clean();</script>
+</body>
+</html>

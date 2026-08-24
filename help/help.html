@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>誤送信ガード ─ 機能の詳細仕様</title>
+<style>
+    * { box-sizing: border-box; font-family: 'Google Sans', Roboto, 'Hiragino Sans', 'Noto Sans JP', Meiryo, sans-serif; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: #fff; color: #202124; font-size: 14px; line-height: 1.8; }
+    .wrap { max-width: 760px; margin: 0 auto; padding: 32px 24px 64px; }
+    h1 { font-size: 20px; font-weight: 500; margin: 0 0 4px; display: flex; align-items: center; gap: 10px; }
+    h1 img { width: 28px; height: 28px; }
+    .lead { color: #5f6368; font-size: 13px; margin: 0 0 20px; }
+    nav {
+        background: #f8f9fa; border: 1px solid #e8eaed; border-radius: 12px;
+        padding: 14px 20px; font-size: 13px; column-count: 2; column-gap: 32px;
+    }
+    nav a { display: block; color: #1a73e8; text-decoration: none; padding: 2px 0; break-inside: avoid; }
+    nav a:hover { text-decoration: underline; }
+    nav .g { font-weight: 700; color: #5f6368; margin-top: 6px; break-inside: avoid; }
+    nav .g:first-child { margin-top: 0; }
+    h2 {
+        font-size: 15px; font-weight: 500; margin: 40px 0 8px; padding-top: 22px;
+        border-top: 1px solid #e8eaed;
+    }
+    h3 { font-size: 13.5px; font-weight: 700; margin: 18px 0 4px; }
+    p { margin: 6px 0; }
+    ul, ol { margin: 6px 0; padding-left: 1.5em; }
+    li { margin: 3px 0; }
+    code {
+        font-family: 'Roboto Mono', Consolas, monospace; font-size: .86em;
+        background: #f1f3f4; padding: 1px 6px; border-radius: 5px;
+    }
+    table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0; }
+    th, td { border: 1px solid #e0e0e0; padding: 7px 12px; text-align: left; vertical-align: top; }
+    th { background: #f8f9fa; font-weight: 500; color: #5f6368; white-space: nowrap; }
+    .muted { color: #5f6368; font-size: 12.5px; }
+    .pill {
+        display: inline-block; font-size: 11px; font-weight: 700; color: #1a73e8;
+        background: #e8f0fe; border-radius: 10px; padding: 1px 9px; margin-left: 6px;
+        vertical-align: middle;
+    }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chips span {
+        font-family: 'Roboto Mono', Consolas, monospace; font-size: 12px;
+        background: #f1f3f4; border-radius: 12px; padding: 2px 10px;
+    }
+    .dict { column-count: 3; column-gap: 24px; font-size: 12.5px; margin: 8px 0; }
+    .dict div { break-inside: avoid; padding: 1px 0; }
+    .dict b { font-weight: 500; }
+    .dict span { font-family: 'Roboto Mono', Consolas, monospace; color: #5f6368; font-size: 11.5px; }
+    .top { font-size: 12px; }
+    .top a { color: #1a73e8; text-decoration: none; }
+    @media (max-width: 560px) { nav { column-count: 1; } .dict { column-count: 2; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+    <h1 id="top"><img src="../icons/icon48.png" alt="">誤送信ガード ─ 機能の詳細仕様</h1>
+    <p class="lead">この1ページに全仕様を記載しています。付録の一覧（ドメイン・姓辞書など）は拡張機能のコードから直接表示しており、実際の動作と常に一致します。</p>
+
+    <nav>
+        <div class="g">仕組み</div>
+        <a href="#basics">0. 基本の仕組み</a>
+        <a href="#behavior">0-1. 送信の横取りとダイアログ</a>
+        <div class="g">チェック機能</div>
+        <a href="#first">1. 初めての宛先を確認</a>
+        <a href="#lookalike">2. 似たアドレスを警告（注記）</a>
+        <a href="#known">3. 普段と違う宛先を警告</a>
+        <a href="#greeting">4. 宛名と宛先の不一致を警告</a>
+        <a href="#thread">5. 件名スレッドの新しい宛先</a>
+        <a href="#combo">6. 初めての組織の組み合わせ</a>
+        <a href="#bcc">7. BCC の提案</a>
+        <a href="#internal">8. 自社ドメイン宛の除外</a>
+        <div class="g">データ</div>
+        <a href="#storage">9. 学習データとプライバシー</a>
+        <a href="#perf">10. パフォーマンス</a>
+        <a href="#limits">11. 既知の制限</a>
+        <div class="g">付録（全一覧）</div>
+        <a href="#appendix-domains">A. 主要ドメイン一覧</a>
+        <a href="#appendix-surnames">B. 姓ローマ字辞書</a>
+        <a href="#appendix-kanji">C. 異体字の正規化表</a>
+        <a href="#appendix-greeting">D. 敬称・除外語の一覧</a>
+    </nav>
+
+    <h2 id="basics">0. 基本の仕組み</h2>
+    <ul>
+        <li>異常がなければそのまま送信し、右下に宛先を約2.6秒表示します（クリック不要）</li>
+        <li>異常があるときだけダイアログを表示。<b>すべての項目をタップで確認するまで送信ボタンは押せません</b></li>
+        <li>確認した内容は端末内に記憶され、同じ確認は二度と出ません（下表「一度だけ」の機能）</li>
+        <li>ダイアログの表示と学習以外の動作は一切ありません。外部への通信もありません</li>
+    </ul>
+    <table>
+        <tr><th>機能</th><th>確認の頻度</th></tr>
+        <tr><td>1. 初めての宛先</td><td>宛先ごとに一度だけ</td></tr>
+        <tr><td>3. 普段と違う宛先</td><td>アドレスのペアごとに一度だけ</td></tr>
+        <tr><td>4. 宛名と宛先の不一致</td><td>宛名×宛先の組ごとに一度だけ</td></tr>
+        <tr><td>5. 件名スレッドの新しい宛先</td><td>スレッド×宛先ごとに一度だけ</td></tr>
+        <tr><td>6. 組織の組み合わせ</td><td>組み合わせごとに一度だけ</td></tr>
+        <tr><td>7. BCC の提案</td><td>該当するたび（学習しない）</td></tr>
+    </table>
+
+    <h3 id="behavior">0-1. 送信の横取りとダイアログ</h3>
+    <ul>
+        <li><b>横取りする経路:</b> ①送信ボタンのクリック ②<code>Ctrl+Enter</code> / <code>⌘+Enter</code> ③「送信してアーカイブ」ボタン。capture 段階で最初にイベントを受け取るため、すり抜けはありません</li>
+        <li><b>連打対策:</b> 判定中・ダイアログ表示中の追加の送信操作は無視されます（二重送信しません）</li>
+        <li><b>ダイアログの操作:</b> 各項目をタップ → すべて確認すると「送信」が有効化。<b>Enter キーが既定ボタンとして送信を確定することはありません</b>（Enter はフォーカス中の項目にのみ働きます。表示直後のフォーカスは確認カード上にあるため、勢いで押した Enter はカードの確認にしかなりません。全項目の確認後は Tab で「送信」へ移り Enter/Space でも送信できます）。表示直後 0.4 秒はクリックを無視します（ダブルクリック貫通の防止）。「戻る」・Esc キー・背景クリックでキャンセル</li>
+        <li><b>フェイルセーフ:</b> Gmail の画面構成が変わって宛先を読み取れない場合は「宛先を読み取れません」の目視確認を表示します。拡張が壊れても Gmail 自体の送信機能には影響しません（DOM を改変しないため）</li>
+    </ul>
+
+    <h2 id="first">1. 初めての宛先を確認 <span class="pill">一度だけ</span></h2>
+    <p><b>出る条件:</b> To/Cc/Bcc に、過去に一度も送信していないアドレスが含まれるとき。</p>
+    <p><b>出ない条件:</b></p>
+    <ul>
+        <li>一度「確認して送信」したアドレス（回数と表示名も記憶されます）</li>
+        <li>自社ドメイン宛（<a href="#internal">8</a> 参照）</li>
+    </ul>
+    <p>アドレスの比較は大文字小文字を区別しません。同じアドレスが複数の欄にある場合は1件として扱います。</p>
+
+    <h2 id="lookalike">2. 似たアドレスを警告（注記） <span class="pill">1の付随情報</span></h2>
+    <p>「初めての宛先」の各行に、以下の注記が付くことがあります。この機能単体でダイアログが増えることはありません。</p>
+    <table>
+        <tr><th>注記</th><th>正確な条件</th></tr>
+        <tr>
+            <td>初めてのドメイン</td>
+            <td>そのドメインに送信した実績がない（自社ドメインを除く）</td>
+        </tr>
+        <tr>
+            <td>「〇〇」の打ち間違い？</td>
+            <td>「初めてのドメイン」のとき、次の<b>いずれか</b>と編集距離1〜2:<br>
+                ① あなたの送信履歴にある<b>すべてのドメイン</b>（件数無制限・自動で増加）<br>
+                ② <a href="#appendix-domains">付録A の主要ドメイン</a>（全件掲載）</td>
+        </tr>
+        <tr>
+            <td>〇〇 と酷似</td>
+            <td>送信履歴のアドレス（最大3,000件）と、次のいずれかを満たす:<br>
+                ① 同一ドメインで、@より前が3文字以上、編集距離が「6文字以上なら2以内・5文字以下なら1以内」<br>
+                ② ドメインが違う場合、アドレス全体が8文字以上で編集距離2以内</td>
+        </tr>
+    </table>
+    <p class="muted">編集距離 = 1文字の挿入・削除・置換の最小回数。<code>gmial.com</code>→<code>gmail.com</code> は 2（入替）、<code>sato</code>→<code>saito</code> は 1。</p>
+
+    <h2 id="known">3. 普段と違う宛先を警告 <span class="pill">一度だけ</span></h2>
+    <p>送信実績のある宛先どうしの取り違え（例: 佐藤さんのつもりで斉藤さん）を検知します。</p>
+    <p><b>出る条件（すべて満たすとき）:</b></p>
+    <ol>
+        <li>今回の宛先は送信実績がある（初めてなら 1 で扱う）</li>
+        <li>履歴に「よく送る似たアドレス」が存在する: 送信3回以上、かつ<b>今回の宛先の2倍以上</b>の回数</li>
+        <li>類似の判定は <a href="#lookalike">2</a> の「〇〇と酷似」と同じ規則</li>
+        <li>そのペアをまだ「別人」と確認していない</li>
+    </ol>
+    <p><b>出ない条件:</b> 似た相手を同じメールに両方入れている（意図的とみなす）／回数が拮抗している（どちらが「普段」か判定できないため黙る）／自社ドメイン宛／確認済みペア。確認時は、その宛先に類似する<b>全ペア</b>を一括で記憶します（同じ宛先に繰り返し出ることはありません）。</p>
+
+    <h2 id="greeting">4. 宛名と宛先の不一致を警告 <span class="pill">一度だけ</span></h2>
+    <h3>4-1. 宛名の抽出</h3>
+    <ul>
+        <li>対象範囲: 本文（引用・署名を除く）の<b>先頭300文字・最初の5行</b></li>
+        <li><b>行頭</b>にある「名前（漢字・カタカナ・英字 1〜8文字）＋敬称」だけを宛名とみなします。敬称の一覧は<a href="#appendix-greeting">付録D</a></li>
+        <li>敬称の直後が「行末・空白・、。，,．・：:；;／/（(・行末のへ」のときのみ採用。<b>文中の言及（「鈴木様よりご紹介」「佐藤様におかれましては」）は宛名になりません</b></li>
+        <li>連名（「佐藤様、田中様」）は両方を抽出します</li>
+        <li>英語は行頭の <code>Dear (Mr/Ms/Mrs/Dr/Prof/Professor) X</code> 形式のみ</li>
+        <li><b>抽出しないもの:</b> <a href="#appendix-greeting">付録D の除外語</a>を含む語（お疲れ様・皆様・〇〇会社様 等）／カタカナのみの宛名（社名が多く照合手段がないため）／11文字以上</li>
+    </ul>
+    <h3>4-2. 宛先との照合（いずれか一致で警告なし）</h3>
+    <ol>
+        <li><b>表示名:</b> 宛先チップの表示名と部分一致（<a href="#appendix-kanji">付録C</a> の異体字を正規化して比較。齋藤様→表示名「斉藤」は一致）</li>
+        <li><b>アドレス:</b> 宛名を<a href="#appendix-surnames">付録B の姓辞書</a>でローマ字化し、@より前を <code>. _ - + 数字</code> で区切った各部分と「完全一致 or 前方一致」（<code>taro.sato@</code> の <code>sato</code> は一致。<code>saito@</code> に <code>sato</code> は不一致）。フルネーム宛名（斉藤太郎様）は先頭2〜3文字も姓として試します</li>
+        <li><b>ドメイン:</b> ドメインから記号を除いた文字列に3文字以上のローマ字が含まれる（田中様→<code>tanaka-shoji.example</code> は一致）</li>
+    </ol>
+    <h3>4-3. 警告の出しかた（「疑いの根拠」があるときだけ）</h3>
+    <ul>
+        <li>抽出した宛名の<b>どれか1つでも</b>宛先に一致すれば、警告は出ません（残りは関係者への言及とみなす）</li>
+        <li>どれも一致しない場合でも、次の<b>どちらかの根拠があるときだけ</b>警告します:
+            <br>① 宛先の中に宛名と<b>紛らわしい</b>相手がいる（例: 斉藤様→<code>sato@…</code>、表示名「佐藤」。ローマ字の比較は<a href="#lookalike">2</a> と同じく「6文字以上なら編集距離2以内・5文字以下なら1以内」、漢字の表示名どうしは1以内）→「〇〇 の打ち間違い？」（〇〇には紛らわしい宛先のアドレスが入ります）
+            <br>② 履歴に宛名と一致する相手がいる →「過去の宛先 〇〇 宛ての間違い？」（表示名が一致する相手を送信回数より優先）</li>
+        <li>根拠がゼロの場合（宛名と無関係な趣味アドレス・共有窓口など、照合材料が無いだけ）は<b>黙ります</b>。
+            宛名の書き間違い自体は漏えいに直結しないため検知対象外です</li>
+        <li>確認すると「その宛名×今回の宛先」の組を記憶し、同じ組では二度と出ません</li>
+        <li>宛先が自社ドメインのみのメールでは動作しません</li>
+    </ul>
+
+    <h2 id="thread">5. 件名スレッドの新しい宛先を警告 <span class="pill">一度だけ</span></h2>
+    <h3>5-1. スレッドの同定</h3>
+    <ol>
+        <li>件名の前後の空白を除去し、小文字化</li>
+        <li>先頭の接頭辞（<a href="#appendix-greeting">付録D</a>: re / fw / fwd / 返信 / 転送 / 回答 ＋「:」「：」）を繰り返し除去</li>
+        <li>すべての空白を除去。<b>4文字未満になった件名は対象外</b>（「ご連絡」のような短い定型件名の誤同定を防ぐ）</li>
+        <li>ハッシュ値のみ保存します（件名の文字列自体は保存されません）</li>
+    </ol>
+    <h3>5-2. 判定</h3>
+    <ul>
+        <li>「スレッドのメンバー」は2つの情報源の統合です:
+            ①同じ件名で過去に送信したときの学習履歴
+            ②いま返信しているスレッドの参加者（画面のメッセージヘッダから取得）。
+            ②により、拡張の導入直後・履歴ゼロでも初回の返信から検知できます</li>
+        <li>メンバーに居ない宛先が今回のメールに含まれるとき警告</li>
+        <li>転送（Fwd:/転送:）は「スレッド外の相手に送る」操作そのもののため、②は使いません（毎回の警告を防ぐ）</li>
+        <li>外部宛先が1件以上あるメールでは<b>外部宛先だけで</b>「一部が新顔か」を判定します。外部が全員入れ替わっている場合は、定型件名の別案件とみなして黙ります（上司などの社内CCが共通でも誤検知しません）</li>
+        <li>送信するたびにメンバーは追記されます（確認して送信した相手は次回からスレッドの一員）</li>
+    </ul>
+
+    <h2 id="combo">6. 初めての組織の組み合わせを警告 <span class="pill">一度だけ</span></h2>
+    <ul>
+        <li><b>出る条件:</b> To/Cc（Bcc は含まない）に外部の組織ドメインが<b>2つ以上</b>あり、その組み合わせで送るのが初めてのとき</li>
+        <li>組み合わせはドメインの集合として記憶します（順序・宛先の人数は無関係）</li>
+        <li><a href="#appendix-domains">付録A</a> のフリーメールドメインは「組織」として数えません（gmail.com の2人は組織の混在ではないため）</li>
+    </ul>
+
+    <h2 id="bcc">7. BCC の提案</h2>
+    <ul>
+        <li><b>出る条件:</b> To/Cc の外部宛先が<b>設定値（既定5、2〜100で変更可）以上</b>のとき。受信者全員が互いのアドレスを見られる状態のため、一斉送信なら BCC を提案します</li>
+        <li>Bcc に入れた宛先は数えません（正しく BCC を使っていれば出ません）</li>
+        <li>社内宛先は数えません。ただし<b>フリーメールのアカウントでは全宛先を外部として数えます</b>（gmail.com どうしでも互いのアドレスは個人情報のため）</li>
+        <li>この機能だけは「一度だけ」ではなく該当するたびに出ます（宛先の顔ぶれが毎回違うため）</li>
+    </ul>
+
+    <h2 id="internal">8. 自社ドメイン宛の除外</h2>
+    <ul>
+        <li>From アドレスのドメインを「自組織」とみなし、同じドメイン宛には機能 1〜4 の確認を行いません。自社宛のみのメールでは 4・5 も動作しません</li>
+        <li><b>フリーメール（<a href="#appendix-domains">付録A</a> の全ドメイン）のアカウントでは無効</b>です。同じ gmail.com でも他人だからです。この場合すべての宛先が「外部」として扱われます</li>
+        <li>除外されるのは<b>確認だけ</b>で、学習（送信実績の記録）は継続します。設定でこの除外をオフにできます</li>
+        <li>From は 作成画面の From 欄 → ページタイトル → 画面右上のアカウント表示 → 直近に取得できた値 の順で読み取ります（ポップアウト窓などでも取得するため）。いずれからも取得できない場合、自社ドメイン除外は働きません（安全側）</li>
+    </ul>
+
+    <h2 id="storage">9. 学習データとプライバシー</h2>
+    <table>
+        <tr><th>保存するもの</th><th>内容</th><th>上限</th></tr>
+        <tr><td>確認済みの宛先</td><td>アドレス・表示名・送信回数・最終送信日時</td><td>3,000件</td></tr>
+        <tr><td>確認済みのドメイン</td><td>ドメイン・回数</td><td>—（無制限。<a href="#lookalike">2</a> の照合対象のため削除しません）</td></tr>
+        <tr><td>組織の組み合わせ</td><td>ドメインの集合</td><td>1,000件</td></tr>
+        <tr><td>「別人」確認ペア</td><td>アドレスのペア</td><td>1,000件</td></tr>
+        <tr><td>宛名の確認</td><td>宛名×アドレスの組</td><td>1,000件</td></tr>
+        <tr><td>件名スレッド</td><td>件名のハッシュとメンバー（件名の文字列は保存しない）</td><td>500件</td></tr>
+        <tr><td>統計</td><td>送信回数・ダイアログ表示回数</td><td>—</td></tr>
+    </table>
+    <ul>
+        <li>上限のある項目は、超えると古いものから自動削除されます</li>
+        <li>保存先は <code>chrome.storage.local</code>（この端末の Chrome 内）。要求する権限は <code>storage</code> だけです</li>
+        <li>本文・件名の文章そのものは判定のために読み取るだけで保存しません（保存するのは上の表のとおり、確認済み宛名の氏名部分と件名の復元不能なハッシュのみ）</li>
+        <li>設定画面の「学習データ消去」でいつでも全消去できます。拡張を削除するとデータも消えます</li>
+    </ul>
+
+    <h3>端末間同期（任意・既定ON）</h3>
+    <p>
+        設定「端末間で同期する」がON（<b>既定でON</b>）の間、学習データを圧縮して <code>chrome.storage.sync</code>
+        にミラーし、<b>同じ Google アカウント・Chrome同期ONの別PC</b>と自動共有します。
+        PCを買い替えても宛先の学習が引き継がれます。
+    </p>
+    <ul>
+        <li>同期領域は容量上限（合計100KB / 1項目8KB / 512項目）があるため、表示名など再学習可能な情報は
+            同期せず、ドメイン辞書＋整数インデックスで圧縮して格納します。<b>当拡張の最大容量
+            （宛先3000等）が上限内に収まる</b>よう設計しており、通常利用で同期漏れは起きません
+            （万一超える場合は新しい順に優先し、除外件数を設定画面に表示します）</li>
+        <li>これはご自身の Google アカウントの Chrome 同期基盤を使うもので、
+            <b>開発者や第三者への送信は一切ありません</b>。設定をOFFにすれば、以後データは端末内
+            （<code>chrome.storage.local</code>）だけに留まります</li>
+        <li>複数PCの学習は自動で統合（和集合）されます。ストア公開版どうしでのみ有効です
+            （現在の開発版とストア版は別IDのため互いに同期しません）</li>
+    </ul>
+
+    <h2 id="perf">10. パフォーマンス（Chrome を重くしない設計）</h2>
+    <table>
+        <tr><th>項目</th><th>実装</th></tr>
+        <tr><td>常駐プロセス</td><td><b>なし。</b>background（Service Worker）を持たず、Gmail のタブを閉じれば何も残りません</td></tr>
+        <tr><td>動作するページ</td><td><code>https://mail.google.com/*</code> のみ。他のサイト・Chrome 本体には一切読み込まれません</td></tr>
+        <tr><td>読み込みタイミング</td><td><code>document_idle</code>（Gmail の描画完了後）。ページ表示をブロックしません</td></tr>
+        <tr><td>注入コード量</td><td>約 113KB（非圧縮・依存ライブラリなし）。参考: 従来型拡張は jQuery+jQuery UI で約 180KB</td></tr>
+        <tr><td>待機中の負荷</td><td><b>ゼロ。</b>DOM 監視（MutationObserver）や常駐タイマーを使わず、クリックとキー入力のイベントだけで動作します</td></tr>
+        <tr><td>クリックごとの処理</td><td>「送信ボタンか？」の判定のみ（数マイクロ秒）。送信ボタン以外では即座に抜けます</td></tr>
+        <tr><td>送信時の判定</td><td>宛先読み取り＋リスク判定で実測 1ms 未満。攻撃的な長大入力にも上限ガードあり（<a href="#limits">セキュリティ監査済み</a>）</td></tr>
+        <tr><td>メモリ</td><td>コード＋履歴キャッシュ（上限まで使っても数百KB程度）のみ</td></tr>
+    </table>
+
+    <h2 id="limits">11. 既知の制限</h2>
+    <ul>
+        <li>予約送信（「送信日時を設定」）の経路はチェックされません（今後対応予定）</li>
+        <li>複数の Google アカウント（/mail/u/0 と /u/1 等）を使い分けている場合、学習した宛先履歴は
+            アカウント間で共有されます。別アカウントで送信済みの宛先は「初めての宛先」になりません
+            （アカウント別の学習は今後のバージョンで検討）</li>
+        <li>Gmail 本体にある機能（添付忘れの検出・宛先ゼロのブロック・アップロード中の送信ブロック）は重複して実装していません</li>
+        <li>送信回数が拮抗し、宛名も件名も手がかりが無い取り違えは原理的に検知できません。素通し時の宛先表示と、Gmail の送信取り消し（設定で30秒に変更することを推奨）を最終防衛線としてください</li>
+    </ul>
+
+    <h2 id="appendix-domains">付録A. 主要ドメイン一覧（フリーメール／typo照合先）</h2>
+    <p>以下の全ドメインが ①typo 照合の対象（<a href="#lookalike">2</a>）②「組織」から除外（<a href="#combo">6</a>）③自社ドメイン除外の無効条件（<a href="#internal">8</a>）に使われます。</p>
+    <div class="chips" id="list-domains"></div>
+
+    <h2 id="appendix-surnames">付録B. 姓ローマ字辞書（全件）</h2>
+    <p>宛名（漢字）とメールアドレスを照合するための辞書です。ヘボン式の表記ゆれ（sato / satou / satoh）を含みます。異体字は<a href="#appendix-kanji">付録C</a>で正規化してから引きます。</p>
+    <p class="muted" id="surname-count"></p>
+    <div class="dict" id="list-surnames"></div>
+
+    <h2 id="appendix-kanji">付録C. 異体字の正規化表（全件）</h2>
+    <p>宛名・表示名の比較時に、左の字を右の字として扱います。</p>
+    <div class="chips" id="list-kanji"></div>
+
+    <h2 id="appendix-greeting">付録D. 敬称・除外語の一覧（全件）</h2>
+    <h3>宛名とみなす敬称・役職</h3>
+    <div class="chips" id="list-honorifics"></div>
+    <h3>宛名として扱わない語（これを含む語は除外）</h3>
+    <div class="chips" id="list-block-ja"></div>
+    <h3>英語の除外語（Dear の後）</h3>
+    <div class="chips" id="list-block-en"></div>
+    <h3>件名から除去する接頭辞</h3>
+    <div class="chips" id="list-prefixes"></div>
+
+    <p class="top"><a href="#top">↑ 目次へ戻る</a></p>
+    <p class="muted">オープンソース（MIT License）。Google™ および Gmail™ は Google LLC の商標です。</p>
+</div>
+<script src="../src/risk-engine.js"></script>
+<script src="help.js"></script>
+</body>
+</html>
