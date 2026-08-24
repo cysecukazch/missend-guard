@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<title>promo tiles</title>
+<style>
+    * { margin: 0; box-sizing: border-box; font-family: 'Hiragino Sans', 'Noto Sans JP', Meiryo, sans-serif; }
+    body { background: #fff; }
+    .tile {
+        position: relative; overflow: hidden;
+        background: linear-gradient(135deg, #f8fafd 0%, #e8f0fe 55%, #d7e5fc 100%);
+        display: flex; align-items: center;
+    }
+    /* ---- 小タイル 440x280 ---- */
+    .small { width: 440px; height: 280px; flex-direction: column; justify-content: center; gap: 14px; }
+    .small img { width: 88px; height: 88px; }
+    .small .name { font-size: 30px; font-weight: 700; color: #1f2937; letter-spacing: .5px; }
+    .small .name span { color: #1a73e8; }
+    .small .tag { font-size: 15.5px; color: #5f6368; font-weight: 500; }
+    /* ---- マーキー 1400x560 ---- */
+    .marquee { width: 1400px; height: 560px; padding: 0 90px; gap: 70px; }
+    .m-left { flex: 1; }
+    .m-left .brand { display: flex; align-items: center; gap: 22px; margin-bottom: 26px; }
+    .m-left .brand img { width: 96px; height: 96px; }
+    .m-left .name { font-size: 42px; font-weight: 700; color: #1f2937; letter-spacing: .5px; white-space: nowrap; }
+    .m-left .name span { color: #1a73e8; }
+    .m-left .tag { font-size: 26px; color: #3c4043; font-weight: 600; margin-bottom: 22px; }
+    .chips { display: flex; gap: 12px; flex-wrap: wrap; }
+    .chip { background: #fff; border: 1.5px solid #dadce0; border-radius: 20px;
+            padding: 9px 18px; font-size: 17px; color: #5f6368; font-weight: 500; }
+    /* 右側: ダイアログ簡易モック */
+    .mock { width: 460px; background: #fff; border-radius: 16px;
+            box-shadow: 0 8px 28px rgba(60,64,67,.22); overflow: hidden; flex: none; }
+    .mock .head { background: #fef7e0; padding: 18px 24px; display: flex; align-items: center; gap: 12px; }
+    .mock .head .tri { width: 0; height: 0; border-left: 11px solid transparent;
+        border-right: 11px solid transparent; border-bottom: 19px solid #b06000; }
+    .mock .head .t { font-size: 19px; font-weight: 700; color: #202124; }
+    .mock .card { margin: 18px 20px; border: 2px solid #1a73e8; border-radius: 12px;
+        padding: 16px 18px; display: flex; align-items: center; gap: 14px; }
+    .mock .card .ic { width: 40px; height: 40px; border-radius: 50%; background: #fef0d3;
+        display: flex; align-items: center; justify-content: center; font-size: 19px; }
+    .mock .card .tt { font-size: 17px; font-weight: 600; color: #202124; }
+    .mock .card .dd { font-size: 14px; color: #b06000; margin-top: 3px; font-weight: 500; }
+    .mock .card .ring { margin-left: auto; width: 22px; height: 22px; border-radius: 50%;
+        border: 2.5px solid #b06000; flex: none; }
+    .mock .foot { display: flex; align-items: center; padding: 6px 20px 18px; gap: 10px; }
+    .mock .foot .hint { font-size: 14px; color: #5f6368; flex: 1; }
+    .mock .foot .btn { background: #1a73e8; color: #fff; border-radius: 20px;
+        padding: 9px 26px; font-size: 15.5px; font-weight: 600; }
+</style>
+</head>
+<body>
+<div class="tile small" id="small">
+    <img src="../icons/icon128.png" alt="">
+    <div class="name">誤送信ガード <span>for Gmail</span></div>
+    <div class="tag">送るほど賢くなる誤送信防止</div>
+</div>
+
+<div class="tile marquee" id="marquee">
+    <div class="m-left">
+        <div class="brand">
+            <img src="../icons/icon128.png" alt="">
+            <div class="name">誤送信ガード <span>for Gmail</span></div>
+        </div>
+        <div class="tag">異常があるときだけ確認。いつもの送信は、そのまま。</div>
+        <div class="chips">
+            <div class="chip">初めての宛先</div>
+            <div class="chip">取り違え検知</div>
+            <div class="chip">宛名と宛先の照合</div>
+            <div class="chip">BCC忘れ防止</div>
+        </div>
+    </div>
+    <div class="mock">
+        <div class="head"><div class="tri"></div><div class="t">送信前チェック</div></div>
+        <div class="card">
+            <div class="ic">✉</div>
+            <div>
+                <div class="tt">初めての宛先（1件）</div>
+                <div class="dd">「sakura-trade.example」の打ち間違い？</div>
+            </div>
+            <div class="ring"></div>
+        </div>
+        <div class="foot"><div class="hint">確認して送信すると、次回から表示されません</div><div class="btn">送信</div></div>
+    </div>
+</div>
+
+<script>
+    // ?tile=small|marquee で該当タイルだけを左上に表示（撮影用）
+    const t = new URLSearchParams(location.search).get('tile');
+    if (t) {
+        for (const el of document.querySelectorAll('.tile')) {
+            el.style.display = el.id === t ? 'flex' : 'none';
+        }
+        document.body.style.margin = '0';
+    }
+</script>
+</body>
+</html>
