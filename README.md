@@ -76,7 +76,7 @@ src/ui.js             # 確認ダイアログ / トースト（Shadow DOM）
 src/content.js        # 送信イベントの横取りと制御
 options/              # 設定画面
 test/                 # 単体テスト + Gmail DOM 模擬ハーネス
-docs/                 # 監査レポート・設計文書
+docs/                 # 設計・セキュリティ・セルフホスト文書
 ```
 
 - 単体テスト: `npm test`（node --test）
