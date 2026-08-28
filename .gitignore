@@ -6,3 +6,9 @@ node_modules/
 mail-key.private.pem
 mail-key.pub.b64
 *.pem
+
+# 内部文書（公開不要・ローカル参照用のみ。Git履歴からは除去済み）
+docs/AUDIT.md
+docs/STORE_LISTING.md
+docs/SUBMISSION_CHECKLIST.md
+docs/GITHUB_SETUP.md
