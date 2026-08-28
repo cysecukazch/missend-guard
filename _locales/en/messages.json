@@ -3,7 +3,7 @@
     "message": "Missend Guard for Gmail"
   },
   "extDesc": {
-    "message": "Gets smarter as you send. Confirms only when something looks off: first-time recipients, look-alike mix-ups, forgotten BCC."
+    "message": "Quietly prevents Gmail misdelivery. Warns only when something looks off: wrong recipient, look-alike address, forgotten BCC. Free."
   },
   "dlgTitle": {
     "message": "Pre-send check"
