@@ -84,6 +84,17 @@
         document.getElementById('recipSearch').addEventListener('input', (e) => {
             renderRecipients(e.target.value.trim().toLowerCase());
         });
+
+        // レビュー・フィードバックの常設リンク（開くだけ。データ送信はしない）
+        const Gate = globalThis.PSG_ReviewGate;
+        if (Gate && Gate.urls) {
+            const urls = Gate.urls();
+            const rv = document.getElementById('reviewLink');
+            const fb = document.getElementById('feedbackLink');
+            if (urls.review) rv.href = urls.review;
+            else rv.style.display = 'none'; // 開発版などストア URL を作れない環境では隠す
+            fb.href = urls.feedback;
+        }
     }
 
     let allRecipients = [];

@@ -205,5 +205,38 @@
   },
   "opt_local_error": {
     "message": "保存に失敗しています: $1"
+  },
+  "rvQ": {
+    "message": "誤送信ガードはお役に立てていますか？"
+  },
+  "rvYes": {
+    "message": "はい"
+  },
+  "rvNo": {
+    "message": "いまいち"
+  },
+  "rvThanks": {
+    "message": "ありがとうございます！Chrome ウェブストアのレビューで応援していただけると励みになります。"
+  },
+  "rvRate": {
+    "message": "レビューを書く"
+  },
+  "rvSorry": {
+    "message": "よろしければ、改善のためのご意見をお聞かせください。"
+  },
+  "rvFeedback": {
+    "message": "要望を伝える"
+  },
+  "rvNever": {
+    "message": "今後表示しない"
+  },
+  "opt_review_note": {
+    "message": "誤送信ガードがお役に立っていたら、レビューで応援していただけると励みになります。"
+  },
+  "opt_review_link": {
+    "message": "★ レビューで応援する"
+  },
+  "opt_feedback_link": {
+    "message": "要望・不具合を伝える"
   }
 }

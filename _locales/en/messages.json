@@ -205,5 +205,38 @@
   },
   "opt_local_error": {
     "message": "Save is failing: $1"
+  },
+  "rvQ": {
+    "message": "Is Missend Guard helpful?"
+  },
+  "rvYes": {
+    "message": "Yes"
+  },
+  "rvNo": {
+    "message": "Not really"
+  },
+  "rvThanks": {
+    "message": "Thank you! A review on the Chrome Web Store would mean a lot."
+  },
+  "rvRate": {
+    "message": "Write a review"
+  },
+  "rvSorry": {
+    "message": "We'd love to hear how it could serve you better."
+  },
+  "rvFeedback": {
+    "message": "Send feedback"
+  },
+  "rvNever": {
+    "message": "Don't show again"
+  },
+  "opt_review_note": {
+    "message": "If Missend Guard has been helpful, a review would mean a lot."
+  },
+  "opt_review_link": {
+    "message": "★ Support with a review"
+  },
+  "opt_feedback_link": {
+    "message": "Report issues & ideas"
   }
 }

@@ -252,6 +252,33 @@
         .footlinks a:hover { text-decoration: underline; }
         .footlinks svg { width: 14px; height: 14px; fill: var(--accent); }
         .rowmore { font-size: 12px; color: var(--muted); padding: 3px 0 0 0; font-family: 'Roboto Mono', monospace; }
+        /* レビューのお願い（一度きりの控えめなカード）。通常トーストと重ならない高さに置く */
+        .rvcard {
+            position: fixed; right: 24px; bottom: 84px; z-index: 2147483646;
+            width: min(340px, calc(100vw - 48px));
+            background: var(--surface); color: var(--ink);
+            border: 1px solid var(--line); border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,.25);
+            padding: 14px 16px; animation: rise .2s ease-out;
+        }
+        .rvhead { display: flex; gap: 10px; align-items: flex-start; }
+        .rvicon { flex: none; width: 20px; height: 20px; margin-top: 1px; }
+        .rvicon svg { width: 20px; height: 20px; fill: var(--accent); }
+        .rvtext { flex: 1; font-size: 13.5px; line-height: 1.55; }
+        .rvx {
+            flex: none; background: none; border: none; padding: 2px 7px; margin: -4px -7px 0 0;
+            cursor: pointer; color: var(--muted); font-size: 14px; border-radius: 50%; line-height: 1.4;
+        }
+        .rvx:hover { background: var(--surface-2); }
+        .rvbtns { display: flex; gap: 8px; justify-content: flex-end; margin-top: 12px; }
+        .rvbtns button { padding: 7px 16px; font-size: 13px; }
+        /* SR 通知用（視覚上は隠すが読み上げ対象に残す） */
+        .rvlive {
+            position: absolute; width: 1px; height: 1px; overflow: hidden;
+            clip-path: inset(50%); white-space: nowrap;
+        }
+        @media (prefers-reduced-motion: reduce) { .rvcard { animation: none; } }
+        @media (forced-colors: active) { .rvcard { border: 1px solid CanvasText; } }
     `;
 
     let openHost = null;
@@ -592,5 +619,96 @@
         cur.timer = setTimeout(() => { cur.host.remove(); if (toastState === cur) toastState = null; }, ms || 2600);
     }
 
-    root.PSG_UI = { openDialog, toast, msg };
+    /**
+     * レビューのお願い（一度きりの控えめなカード）。表示条件は src/review-gate.js。
+     *   - フォーカスは奪わない（作業中の入力を一切邪魔しない）
+     *   - 無操作なら autoHideMs で自動で消える（2段目に進んだら自動では消えない）
+     *   - すべての操作（レビュー/要望/✕/今後表示しない）で onAction が呼ばれ、以後は出ない
+     * @param opt {{autoHideMs?: number, onAction: (kind:'rate'|'feedback'|'never')=>void, onAutoHide?: ()=>void}}
+     */
+    function reviewToast(opt) {
+        const { host, shadow } = makeHost();
+        const card = el('div', 'rvcard');
+        card.setAttribute('role', 'group');            // 非モーダル。表示時にフォーカスは移さない
+        card.setAttribute('aria-label', msg('rvQ'));
+        // SR 通知用のライブリージョン（toast() と同じ「空→内容」パターンで読み上げさせる）。
+        // stage() が作り直す本文とは別に、カード内に固定で持つ
+        const live = el('span', 'rvlive');
+        live.setAttribute('role', 'status');
+        card.appendChild(live);
+        const bodyEl = el('div');
+        card.appendChild(bodyEl);
+        let liveTimer = 0;
+        function announce(text) {
+            clearTimeout(liveTimer);
+            live.textContent = '';
+            liveTimer = setTimeout(() => { if (host.isConnected) live.textContent = text; }, 50);
+        }
+        let timer = setTimeout(() => {
+            host.remove();
+            opt.onAutoHide && opt.onAutoHide();
+        }, opt.autoHideMs || 15000);
+        const closeWith = (kind) => {
+            clearTimeout(timer);
+            host.remove();
+            opt.onAction && opt.onAction(kind);
+        };
+        // Esc でも閉じられる（フォーカスがカード内にあるときだけ受け取り、Gmail には伝えない）
+        card.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                e.preventDefault();
+                e.stopPropagation();
+                closeWith('never');
+            }
+        });
+        const STAR = 'M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z';
+        /** カードの中身を差し替える。buttons: [{label, primary, onClick}] */
+        function stage(text, buttons) {
+            // キーボード操作中（フォーカスがカード内）は、差し替え後に主ボタンへフォーカスを移す
+            // （表示直後の初回 stage ではカード内にフォーカスが無いため、何も奪わない）
+            const hadFocus = shadow.activeElement && card.contains(shadow.activeElement);
+            bodyEl.textContent = '';
+            const head = el('div', 'rvhead');
+            const ic = el('span', 'rvicon');
+            ic.appendChild(svgIcon(STAR));
+            head.appendChild(ic);
+            head.appendChild(el('div', 'rvtext', text));
+            const x = el('button', 'rvx', '✕');
+            x.setAttribute('aria-label', msg('rvNever'));
+            x.addEventListener('click', () => closeWith('never'));
+            head.appendChild(x);
+            bodyEl.appendChild(head);
+            const btns = el('div', 'rvbtns');
+            let primaryBtn = null;
+            for (const b of buttons) {
+                const btn = el('button', b.primary ? 'btn-send' : 'btn-cancel', b.label);
+                btn.addEventListener('click', b.onClick);
+                btns.appendChild(btn);
+                if (b.primary || !primaryBtn) primaryBtn = btn;
+            }
+            bodyEl.appendChild(btns);
+            announce(text);
+            if (hadFocus && primaryBtn) primaryBtn.focus();
+        }
+        // 1段目に返答してくれたら: 確定を通知し（以後は出ない）、自動消滅は仕切り直す
+        // （2段目を読んでいる最中に消さない。残しっぱなしにもしない）
+        const engage = () => {
+            clearTimeout(timer);
+            timer = setTimeout(() => host.remove(), opt.autoHideMs || 15000);
+            opt.onEngage && opt.onEngage();
+        };
+        stage(msg('rvQ'), [
+            { label: msg('rvNo'), onClick: () => { engage(); stage(msg('rvSorry'), [
+                { label: msg('rvNever'), onClick: () => closeWith('never') },
+                { label: msg('rvFeedback'), primary: true, onClick: () => closeWith('feedback') }
+            ]); } },
+            { label: msg('rvYes'), primary: true, onClick: () => { engage(); stage(msg('rvThanks'), [
+                { label: msg('rvNever'), onClick: () => closeWith('never') },
+                { label: msg('rvRate'), primary: true, onClick: () => closeWith('rate') }
+            ]); } }
+        ]);
+        shadow.appendChild(card);
+    }
+
+    root.PSG_UI = { openDialog, toast, reviewToast, msg };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

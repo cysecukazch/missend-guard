@@ -25,7 +25,9 @@
         greetAcks: {},   // "宛名|email" -> 「この宛名でOKと確認済み」epoch ms
         threads: {},     // 件名ハッシュ -> {r: [emails], t}
         stats: { sends: 0, dialogs: 0, autoPass: 0 },
-        settings: {}
+        settings: {},
+        // レビューのお願いの状態（この端末のみ。sync には載せない）
+        review: { installTs: 0, state: 'none', shownCount: 0, lastShownTs: 0, lastCancelTs: 0 }
     });
 
     let cache = null;
@@ -38,6 +40,7 @@
             try {
                 chrome.storage.local.get(KEY, data => {
                     cache = Object.assign(EMPTY(), data && data[KEY]);
+                    stampInstall();
                     loading = null;
                     resolve(cache);
                 });
@@ -48,6 +51,15 @@
             }
         });
         return loading;
+    }
+
+    /** 初回ロード時に導入日時を記録する（レビューのお願いの「導入から◯日」判定用） */
+    function stampInstall() {
+        if (!cache.review) cache.review = { installTs: 0, state: 'none', shownCount: 0, lastShownTs: 0, lastCancelTs: 0 };
+        if (!cache.review.installTs) {
+            cache.review.installTs = Date.now();
+            save();
+        }
     }
 
     // 保存・同期の状態（設定画面で可視化する）
@@ -256,6 +268,30 @@
         return db;
     }
 
+    /* --- レビューのお願いの状態（src/review-gate.js が判定に使う） --- */
+
+    /** 表示した瞬間に呼ぶ（無操作で消えても回数は消費される） */
+    async function markReviewShown() {
+        const db = await load();
+        db.review.shownCount = (db.review.shownCount || 0) + 1;
+        db.review.lastShownTs = Date.now();
+        await save();
+    }
+
+    /** ボタンを操作したら呼ぶ（レビュー・要望・今後表示しない、いずれでも以後は出さない） */
+    async function markReviewDone() {
+        const db = await load();
+        db.review.state = 'done';
+        await save();
+    }
+
+    /** 確認ダイアログをキャンセルしたら呼ぶ（30分間はレビューのお願いを出さない。全タブで共有） */
+    async function markReviewCanceled() {
+        const db = await load();
+        db.review.lastCancelTs = Date.now();
+        await save();
+    }
+
     async function getSettings() {
         const db = await load();
         return Object.assign({}, root.PSG_RiskEngine.DEFAULT_SETTINGS, db.settings);
@@ -316,6 +352,7 @@
     root.PSG_Store = {
         load, recordSend, getHistory, getSettings, setSettings, clearHistory,
         setSyncEnabled, getSyncInfo, getStatus, syncPull,
-        undoLastLearn, hasUndo, forgetRecipient, KEY
+        undoLastLearn, hasUndo, forgetRecipient,
+        markReviewShown, markReviewDone, markReviewCanceled, KEY
     };
 })(typeof globalThis !== 'undefined' ? globalThis : this);

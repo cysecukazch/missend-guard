@@ -16,6 +16,7 @@
     const Dom = globalThis.PSG_GmailDom;
     const Store = globalThis.PSG_Store;
     const UI = globalThis.PSG_UI;
+    const Gate = globalThis.PSG_ReviewGate;
 
     /** チェック通過済みのコンポーズ（次の 1 回の送信操作を素通しさせる） */
     const passed = new WeakSet();
@@ -24,6 +25,43 @@
     let busy = false; // ダイアログ表示中
     let busyWatchdog = 0;
     function clearBusyWatchdog() { if (busyWatchdog) { clearTimeout(busyWatchdog); busyWatchdog = 0; } }
+    /** 直近でダイアログをキャンセルした時刻（レビューのお願いをその直後に出さないため） */
+    let lastCancelTs = 0;
+
+    /**
+     * レビューのお願い（src/review-gate.js の条件を満たすときだけ・生涯最大2回）。
+     * 「異常なしの素通し送信」の直後にのみ呼ばれる。素通しトーストが消えてから、
+     * 最新の状態で再判定して表示する。失敗しても送信フローには影響させない。
+     */
+    function maybeAskReview(settings) {
+        if (!Gate || !UI.reviewToast || !Store.markReviewShown) return;
+        setTimeout(async () => {
+            try {
+                const db = await Store.getHistory();
+                const ok = Gate.shouldShow(Date.now(), db, {
+                    anomalies: 0,
+                    strictMode: settings.strictMode,
+                    showToast: settings.showToast,
+                    busy,
+                    lastCancelTs
+                });
+                if (!ok) return;
+                await Store.markReviewShown(); // 表示した時点で回数を消費（最大2回）
+                const urls = Gate.urls();
+                UI.reviewToast({
+                    autoHideMs: Gate.CONFIG.autoHideMs,
+                    // 1段目（はい/いまいち）を押した時点で確定（以後は出さない）。
+                    // 2段目を操作せずタブを閉じても「無操作」扱いで再表示されることがないように
+                    onEngage: () => Store.markReviewDone(),
+                    onAction: (kind) => {
+                        Store.markReviewDone(); // どの操作でも以後は出さない
+                        if (kind === 'rate' && urls.review) window.open(urls.review, '_blank', 'noopener');
+                        else if (kind === 'feedback') window.open(urls.feedback, '_blank', 'noopener');
+                    }
+                });
+            } catch (e) { /* レビュー導線の不具合が送信体験に影響しないよう握りつぶす */ }
+        }, Gate.CONFIG.showDelayMs);
+    }
 
     /** 実際に Gmail の送信を発火させる */
     function fireSend(sendBtn) {
@@ -102,6 +140,7 @@
                         ? UI.msg('toastOkMore', [first.email, String(extra)])
                         : UI.msg('toastOkTo', [first.email]));
                 }
+                maybeAskReview(settings);
                 return;
             }
 
@@ -118,7 +157,12 @@
                     sends: (db.stats && db.stats.sends) || 0,
                     learnEnabled: settings.learnEnabled,
                     onSend: () => { busy = false; clearBusyWatchdog(); send(); },
-                    onCancel: () => { busy = false; clearBusyWatchdog(); }
+                    onCancel: () => {
+                        busy = false; clearBusyWatchdog();
+                        lastCancelTs = Date.now(); // このタブでは即時反映
+                        // 別タブ・リロード後にもクールダウンが効くよう storage にも記録
+                        if (Store.markReviewCanceled) Store.markReviewCanceled();
+                    }
                 });
             } catch (e) {
                 // ダイアログを出せなかった → ロックせず通常送信にフォールバック

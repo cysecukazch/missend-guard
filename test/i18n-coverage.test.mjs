@@ -41,7 +41,10 @@ for (const locale of LOCALES) {
             'dlgTitle', 'dlgSubAnomalies', 'dlgSubStrict', 'dlgAllRecipients',
             'btnCancel', 'btnSend', 'ackHint', 'ackAllDone',
             'lblSubject', 'lblAttachments',
-            'toastOkTo', 'toastOkMore'
+            'toastOkTo', 'toastOkMore',
+            // レビューのお願い（reviewToast）と設定画面の常設リンク
+            'rvQ', 'rvYes', 'rvNo', 'rvThanks', 'rvRate', 'rvSorry', 'rvFeedback', 'rvNever',
+            'opt_review_note', 'opt_review_link', 'opt_feedback_link'
         ];
         for (const key of REQUIRED) {
             const m = dicts[locale][key];
