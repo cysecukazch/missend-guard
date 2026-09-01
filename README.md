@@ -11,6 +11,7 @@ no data ever leaves your browser.*
 **［インストール］** [Chrome ウェブストアで入手](https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio)
 ／ [公式サイト](https://cysecukazch.github.io/missend-guard/)
 ／ [機能の詳細仕様（全公開）](https://cysecukazch.github.io/missend-guard/help/help.html)
+／ [お問い合わせ](https://forms.gle/ZpH63c9LBvbSZp2B7)
 
 ## なぜ「毎回確認」では誤送信が減らないのか
 
