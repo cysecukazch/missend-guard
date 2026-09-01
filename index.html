@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gmail誤送信防止の拡張機能「誤送信ガード for Gmail」公式サイト</title>
+<meta name="description" content="Gmailの誤送信を防止する無料のChrome拡張機能。宛先の取り違え・アドレスの打ち間違い・BCC忘れを送信前に検知し、いつもと違うときだけ警告。データの外部送信ゼロ・オープンソース。">
+<link rel="canonical" href="https://cysecukazch.github.io/missend-guard/">
+<link rel="icon" href="icons/icon48.png">
+<meta property="og:type" content="website">
+<meta property="og:title" content="誤送信ガード for Gmail — Gmailの誤送信防止拡張機能">
+<meta property="og:description" content="Gmailの誤送信を、静かに防ぐ。宛先の取り違え・typo・BCC忘れを送信前に検知する無料Chrome拡張。外部送信ゼロ・オープンソース。">
+<meta property="og:url" content="https://cysecukazch.github.io/missend-guard/">
+<meta property="og:image" content="https://cysecukazch.github.io/missend-guard/icons/icon128.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SoftwareApplication",
+  "name": "誤送信ガード for Gmail (Missend Guard)",
+  "alternateName": "Missend Guard for Gmail",
+  "operatingSystem": "Chrome",
+  "applicationCategory": "BrowserApplication",
+  "offers": { "@type": "Offer", "price": "0", "priceCurrency": "JPY" },
+  "description": "Gmailの誤送信を防止する無料のChrome拡張機能。初めての宛先・よく似たアドレス・BCC忘れなど7種類の異常を送信前に検知し、いつもと違うときだけ警告する。データの外部送信は一切なし。オープンソース（MIT License）。",
+  "url": "https://cysecukazch.github.io/missend-guard/",
+  "installUrl": "https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio",
+  "softwareVersion": "1.1.1",
+  "author": { "@type": "Organization", "name": "ハッカーかずの部屋" },
+  "license": "https://opensource.org/licenses/MIT"
+}
+</script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "Gmailの誤送信を防止するには？",
+      "acceptedAnswer": { "@type": "Answer", "text": "Gmail標準の「送信取り消し」を30秒に設定したうえで、送信前に宛先を検査する拡張機能を併用するのが現実的です。誤送信ガードは、初めての宛先・よく似たアドレス（編集距離2以内のtypo検知）・BCC忘れなど7種類の異常を送信前に検知し、異常があるときだけ確認を求めます。" }
+    },
+    {
+      "@type": "Question",
+      "name": "無料で使えますか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "はい。全機能が無料で、課金・広告・アカウント登録は一切ありません（MIT License のオープンソース）。" }
+    },
+    {
+      "@type": "Question",
+      "name": "メールの内容は外部に送信されますか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "されません。外部と通信するコードを一切含まず、学習した宛先履歴は利用者自身のChrome内にのみ保存されます。要求する権限はstorageのみです。" }
+    },
+    {
+      "@type": "Question",
+      "name": "会社のGmail（Google Workspace）でも使えますか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "使えます。自社ドメイン宛（Fromと同じドメイン）はチェックされないため、社内メールは邪魔されません。外部送信ゼロ・最小権限・オープンソースのため、情報システム部門にも説明しやすい構成です。" }
+    }
+  ]
+}
+</script>
+<style>
+    :root {
+        --bg: #fff; --ink: #202124; --muted: #5f6368; --line: #e8eaed;
+        --accent: #1a73e8; --accent-hover: #1765cc; --on-accent: #fff;
+        --band: #f8f9fa; --caution-bg: #fef7e0; --caution: #a85800;
+        --ok: #137333; --ok-bg: #e6f4ea;
+    }
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --bg: #202124; --ink: #e8eaed; --muted: #9aa0a6; --line: #47484c;
+            --accent: #8ab4f8; --accent-hover: #aecbfa; --on-accent: #202124;
+            --band: #2d2e31; --caution-bg: rgba(249,171,0,.12); --caution: #fdd663;
+            --ok: #81c995; --ok-bg: rgba(129,201,149,.15);
+        }
+    }
+    * { box-sizing: border-box; }
+    body {
+        margin: 0; background: var(--bg); color: var(--ink);
+        font-family: 'Hiragino Sans', 'Noto Sans JP', Meiryo, -apple-system, Roboto, sans-serif;
+        font-size: 15px; line-height: 1.9;
+    }
+    .wrap { max-width: 780px; margin: 0 auto; padding: 0 24px; }
+    header { padding: 56px 0 40px; text-align: center; }
+    header img { width: 72px; height: 72px; }
+    h1 { font-size: 26px; font-weight: 600; margin: 16px 0 6px; line-height: 1.5; }
+    .tagline { color: var(--muted); font-size: 15.5px; margin: 0 0 26px; }
+    .cta {
+        display: inline-block; background: var(--accent); color: var(--on-accent);
+        font-size: 15px; font-weight: 600; text-decoration: none;
+        padding: 13px 34px; border-radius: 26px;
+    }
+    .cta:hover { background: var(--accent-hover); }
+    .ctasub { font-size: 12.5px; color: var(--muted); margin-top: 10px; }
+    .trust { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; margin-top: 26px; }
+    .trust span {
+        font-size: 12px; color: var(--ok); background: var(--ok-bg);
+        border-radius: 12px; padding: 3px 12px;
+    }
+    section { padding: 34px 0; border-top: 1px solid var(--line); }
+    h2 { font-size: 19px; font-weight: 600; margin: 0 0 14px; }
+    h3 { font-size: 15.5px; font-weight: 600; margin: 24px 0 6px; }
+    p { margin: 8px 0; }
+    .muted { color: var(--muted); }
+    ul { margin: 8px 0; padding-left: 1.4em; }
+    li { margin: 5px 0; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 12px; margin-top: 16px; }
+    .card { background: var(--band); border-radius: 12px; padding: 16px 18px; }
+    .card b { display: block; font-size: 14.5px; margin-bottom: 4px; }
+    .card p { font-size: 13px; color: var(--muted); margin: 0; line-height: 1.7; }
+    .callout { background: var(--caution-bg); color: var(--caution); border-radius: 12px; padding: 14px 18px; font-size: 14px; }
+    a { color: var(--accent); }
+    footer { border-top: 1px solid var(--line); padding: 28px 0 48px; font-size: 13px; color: var(--muted); }
+    footer nav { display: flex; flex-wrap: wrap; gap: 18px; margin-bottom: 14px; }
+    footer a { text-decoration: none; }
+    footer a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+<header>
+    <img src="icons/icon128.png" alt="誤送信ガード for Gmail のアイコン" width="72" height="72">
+    <h1>Gmailの誤送信防止を、静かに。<br>誤送信ガード for Gmail</h1>
+    <p class="tagline">宛先の取り違え・アドレスの打ち間違い・BCC忘れを送信前に検知する、無料のChrome拡張機能。<br>いつもと違うときだけ警告し、通常の送信は一切邪魔しません。</p>
+    <a class="cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">Chrome に追加（無料）</a>
+    <div class="ctasub">Chrome ウェブストアが開きます ・ Microsoft Edge などChromium系ブラウザでも利用できます</div>
+    <div class="trust">
+        <span>✓ データの外部送信ゼロ</span>
+        <span>✓ 権限は storage のみ</span>
+        <span>✓ オープンソース（MIT）</span>
+        <span>✓ 無料・広告なし</span>
+    </div>
+</header>
+
+<section>
+    <h2>なぜ「毎回確認」では誤送信が防げないのか</h2>
+    <p>従来の誤送信防止ツールは、送信のたびに全項目の確認を強制します。毎回同じ確認を繰り返すと、
+    確認はただの“クリックの儀式”になり、肝心の一通を素通ししてしまいます。</p>
+    <p><b>誤送信ガードは逆の設計です。</b>異常があるときだけ止まるので、確認ダイアログが出ること自体が
+    「何かおかしい」というサインになります。一度確認した宛先は学習され、同じ確認は二度と出ません。</p>
+</section>
+
+<section>
+    <h2>送信前に検知する7つの異常 — 宛先確認・BCCチェック</h2>
+    <div class="grid">
+        <div class="card"><b>BCC忘れの防止</b><p>To/Ccに社外アドレスが多数並ぶ一斉送信を、アドレス漏えいの前にストップ</p></div>
+        <div class="card"><b>宛先の取り違え検知</b><p>佐藤さんのつもりで斉藤さん、を送信履歴の偏りから検知</p></div>
+        <div class="card"><b>別会社の混在チェック</b><p>A社宛のメールにB社の人が紛れていないかを確認</p></div>
+        <div class="card"><b>typoドメインの警告</b><p>「gmial.com」のような打ち間違いを編集距離で指摘</p></div>
+        <div class="card"><b>初めての宛先の確認</b><p>オートコンプリートの選び間違いにその場で気づける</p></div>
+        <div class="card"><b>宛名と宛先の不一致</b><p>本文は「佐藤様」なのに宛先に佐藤さんがいない（異体字・ローマ字対応）</p></div>
+        <div class="card"><b>スレッドの新顔検知</b><p>同じ件名のやり取りに、過去にいなかった宛先が加わったとき</p></div>
+    </div>
+    <p class="muted" style="margin-top:14px">Ctrl+Enter / ⌘+Enter のキーボード送信もすべてチェック。判定条件は
+    <a href="help/help.html">ヘルプページで全仕様を公開</a>しています。</p>
+</section>
+
+<section>
+    <h2>メールを扱う拡張機能だからこそ、検証できる信頼を</h2>
+    <ul>
+        <li><b>外部送信ゼロ</b> — 開発者にも第三者にも、データは送りません。そもそも外部と通信するコードを含みません</li>
+        <li><b>最小権限</b> — 要求する権限は「storage（保存）」だけ。動作は mail.google.com 上のみ</li>
+        <li><b>検証できる</b> — <a href="https://github.com/cysecukazch/missend-guard" rel="noopener">オープンソース（MIT License）</a>。中身は誰でも確認できます</li>
+        <li><b>軽い</b> — 注入コード約113KB・依存ライブラリゼロ・常駐プロセスなし。送信時の判定は実測1ミリ秒未満</li>
+        <li><b>会社でも安心</b> — 情報システム部門にも説明しやすい構成です</li>
+    </ul>
+</section>
+
+<section>
+    <h2>よくある質問 — Gmailの誤送信対策</h2>
+
+    <h3>Gmailの誤送信を防止するには？</h3>
+    <p>Gmail標準の「送信取り消し」を30秒に設定したうえで、送信前に宛先を検査する拡張機能を併用するのが
+    現実的です。誤送信ガードは、初めての宛先・よく似たアドレス（編集距離2以内のtypo検知）・BCC忘れなど
+    7種類の異常を送信前に検知し、異常があるときだけ確認を求めます。</p>
+
+    <h3>無料で使えますか？</h3>
+    <p>はい。全機能が無料で、課金・広告・アカウント登録は一切ありません。</p>
+
+    <h3>メールの内容は外部に送信されますか？</h3>
+    <p>されません。学習した宛先履歴は利用者自身のChrome内（chrome.storage.local）にのみ保存され、
+    設定により同じGoogleアカウントのChrome同期（別PCへの引き継ぎ）だけに載ります。
+    詳細は<a href="store-assets/privacy.html">プライバシーポリシー</a>をご覧ください。</p>
+
+    <h3>会社のGmail（Google Workspace）でも使えますか？</h3>
+    <p>使えます。自社ドメイン宛（Fromと同じドメイン）はチェックされないため、社内の気軽なメールは
+    邪魔されません。</p>
+
+    <h3>既存の誤送信防止拡張と何が違いますか？</h3>
+    <p>「毎回全項目を確認」ではなく「異常があるときだけ確認」する点です。加えて、Ctrl+Enter/⌘+Enterの
+    キーボード送信もすり抜けないこと、送信実績のある宛先どうしの取り違えまで検知すること、
+    データを一切外部送信しないことが設計上の違いです。</p>
+</section>
+
+<section>
+    <div class="callout">💡 まずはGmail側の設定も：歯車アイコン →「すべての設定を表示」→「送信取り消し」を
+    <b>30秒</b>に変更しておくと、誤送信ガードと合わせて二重の備えになります。</div>
+</section>
+
+<footer>
+    <nav>
+        <a href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">Chrome ウェブストア</a>
+        <a href="https://github.com/cysecukazch/missend-guard" rel="noopener">GitHub（ソースコード）</a>
+        <a href="help/help.html">機能の詳細仕様</a>
+        <a href="store-assets/privacy.html">プライバシーポリシー</a>
+        <a href="https://github.com/cysecukazch/missend-guard/issues" rel="noopener">要望・不具合の報告</a>
+    </nav>
+    <div>誤送信ガード for Gmail（Missend Guard for Gmail）／ MIT License<br>
+    Gmail は Google LLC の商標です。本拡張機能は Google によって承認・提携されたものではありません。</div>
+</footer>
+
+</div>
+</body>
+</html>

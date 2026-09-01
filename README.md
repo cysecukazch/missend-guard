@@ -1,7 +1,16 @@
 # 誤送信ガード for Gmail（Missend Guard）
 
-Gmail の誤送信を「確認の手間を増やさずに」防ぐ Chrome 拡張機能（Manifest V3）。
-オープンソース（MIT ライセンス）です。
+Gmail の誤送信を「確認の手間を増やさずに」防ぐ、誤送信防止 Chrome 拡張機能（Manifest V3）。
+宛先の取り違え・typo ドメイン・BCC 忘れによるアドレス漏えいを送信前に検知します。
+オープンソース（MIT ライセンス）・無料・外部へのデータ送信ゼロ。
+
+*Missend Guard is a Chrome extension that prevents Gmail misdelivery — wrong recipients,
+look-alike addresses, forgotten BCC — quietly, without nagging on every send. Free, MIT-licensed,
+no data ever leaves your browser.*
+
+**［インストール］** [Chrome ウェブストアで入手](https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio)
+／ [公式サイト](https://cysecukazch.github.io/missend-guard/)
+／ [機能の詳細仕様（全公開）](https://cysecukazch.github.io/missend-guard/help/help.html)
 
 ## なぜ「毎回確認」では誤送信が減らないのか
 
@@ -90,6 +99,35 @@ Gmail の難読化クラスに依存する箇所はすべて多段フォール�
 万一すべてのセレクタが外れても、**Gmail 自体の送信機能は一切壊れません**
 （DOM を改変せず、イベントの横取りだけで実装しているため）。
 宛先が読み取れない場合はフェイルセーフとして目視確認ダイアログを表示します。
+
+## よくある質問（FAQ）
+
+### Gmail の誤送信を防止するには？
+
+Gmail 標準の「送信取り消し」を 30 秒に設定したうえで、送信前に宛先を検査する拡張機能を
+併用するのが現実的です。本拡張は、初めての宛先・よく似たアドレス（編集距離 2 以内の
+typo 検知）・BCC 忘れなど 7 種類の異常を送信前に検知し、異常があるときだけ確認を求めます。
+
+### 無料で使えますか？
+
+はい。全機能が無料で、課金・広告・アカウント登録は一切ありません（MIT License）。
+
+### 会社の Gmail（Google Workspace）でも使えますか？
+
+使えます。自社ドメイン宛（From と同じドメイン）はチェックされないため、社内メールは
+邪魔されません。要求する権限は storage のみ・外部通信コードを含まないため、
+情報システム部門にも説明しやすい構成です。
+
+### メールの内容は外部に送信されますか？
+
+されません。本拡張は外部と通信するコードを一切含まず（注入コード約 113KB・依存ゼロ）、
+学習した宛先履歴は利用者自身の Chrome 内（`chrome.storage.local`）にのみ保存されます。
+送信時の判定は実測 1ms 未満で完了します。
+
+### 対応ブラウザは？
+
+Google Chrome（Chrome ウェブストア経由）。Microsoft Edge など Chromium 系ブラウザでも
+Chrome ウェブストアから導入できます。
 
 ## ライセンス
 
