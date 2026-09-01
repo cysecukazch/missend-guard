@@ -4,15 +4,19 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Gmail誤送信防止の拡張機能「誤送信ガード for Gmail」公式サイト</title>
-<meta name="description" content="Gmailの誤送信を防止する無料のChrome拡張機能。宛先の取り違え・アドレスの打ち間違い・BCC忘れを送信前に検知し、いつもと違うときだけ警告。データの外部送信ゼロ・オープンソース。">
+<meta name="description" content="Gmailの誤送信を防止する無料のChrome拡張機能。宛先の取り違え・アドレスの打ち間違い・BCC忘れを送信前に検知し、いつもと違うときだけ警告。メールの内容はどこにも送信されません。セキュリティ入門書の著者が開発。">
 <meta name="google-site-verification" content="pjySy2y5GBExNApImvlP-MGwpmetcjgNVISkhVo7bIU">
 <link rel="canonical" href="https://cysecukazch.github.io/missend-guard/">
 <link rel="icon" href="icons/icon48.png">
+<meta name="theme-color" content="#1a73e8" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#17181c" media="(prefers-color-scheme: dark)">
 <meta property="og:type" content="website">
-<meta property="og:title" content="誤送信ガード for Gmail — Gmailの誤送信防止拡張機能">
-<meta property="og:description" content="Gmailの誤送信を、静かに防ぐ。宛先の取り違え・typo・BCC忘れを送信前に検知する無料Chrome拡張。外部送信ゼロ・オープンソース。">
+<meta property="og:title" content="誤送信ガード for Gmail — Gmailの誤送信を、静かに防ぐ">
+<meta property="og:description" content="宛先の取り違え・打ち間違い・BCC忘れを送信前に検知する無料Chrome拡張。いつもと違うときだけ警告。メールはどこにも送信されません。">
 <meta property="og:url" content="https://cysecukazch.github.io/missend-guard/">
-<meta property="og:image" content="https://cysecukazch.github.io/missend-guard/icons/icon128.png">
+<meta property="og:image" content="https://cysecukazch.github.io/missend-guard/store-assets/promo-marquee-1400x560.png">
+<meta property="og:image:width" content="1400">
+<meta property="og:image:height" content="560">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&display=swap" rel="stylesheet">
@@ -29,7 +33,7 @@
   "url": "https://cysecukazch.github.io/missend-guard/",
   "installUrl": "https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio",
   "softwareVersion": "1.1.1",
-  "author": { "@type": "Organization", "name": "ハッカーかずの部屋" },
+  "author": { "@type": "Person", "name": "ハッカーかず", "url": "https://note.com/hacker_kaz" },
   "license": "https://opensource.org/licenses/MIT"
 }
 </script>
@@ -41,22 +45,37 @@
     {
       "@type": "Question",
       "name": "Gmailの誤送信を防止するには？",
-      "acceptedAnswer": { "@type": "Answer", "text": "Gmail標準の「送信取り消し」を30秒に設定したうえで、送信前に宛先を検査する拡張機能を併用するのが現実的です。誤送信ガードは、初めての宛先・よく似たアドレス（編集距離2以内のtypo検知）・BCC忘れなど7種類の異常を送信前に検知し、異常があるときだけ確認を求めます。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "送信の“前”に宛先を点検する仕組みを入れるのが確実です。誤送信ガードは、初めての宛先・1〜2文字だけ違うそっくりアドレス・BCC忘れなど7種類の危険を送信前に検知し、危ないときだけ確認を求めます。あわせてGmail標準の「送信取り消し」を30秒に設定しておくと、二重の備えになります。" }
     },
     {
       "@type": "Question",
-      "name": "無料で使えますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "はい。全機能が無料で、課金・広告・アカウント登録は一切ありません（MIT License のオープンソース）。" }
+      "name": "Gmailの送信取り消し機能があれば十分では？",
+      "acceptedAnswer": { "@type": "Answer", "text": "送信取り消しで取り消せるのは送信後最大30秒、しかも自分でミスに気づけた場合だけです。誤送信の多くは、相手からの返信で初めて発覚します。だからこそ、送信の“前”に気づける仕組みとの併用が有効です。" }
+    },
+    {
+      "@type": "Question",
+      "name": "なぜ無料なのですか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "セキュリティ教育活動の一環として公開しているためです。開発者自身が毎日使う道具であり、課金・広告・データ販売による収益化は行いません。プログラムの中身をすべて公開しているので、誰でも確かめられます。" }
     },
     {
       "@type": "Question",
       "name": "メールの内容は外部に送信されますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "されません。外部と通信するコードを一切含まず、学習した宛先履歴は利用者自身のChrome内にのみ保存されます。要求する権限はstorageのみです。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "されません。メールの内容も宛先も、どこにも送りません（開発者にも見えません）。学習した宛先の記録は、あなたのパソコンのChromeの中だけに保存されます。" }
+    },
+    {
+      "@type": "Question",
+      "name": "スマホでも使えますか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "いいえ、パソコンのChrome / Microsoft Edge 専用です。スマホのGmailアプリでは動作しません。" }
     },
     {
       "@type": "Question",
       "name": "会社のGmail（Google Workspace）でも使えますか？",
-      "acceptedAnswer": { "@type": "Answer", "text": "使えます。自社ドメイン宛（Fromと同じドメイン）はチェックされないため、社内メールは邪魔されません。外部送信ゼロ・最小権限・オープンソースのため、情報システム部門にも説明しやすい構成です。" }
+      "acceptedAnswer": { "@type": "Answer", "text": "使えます。同じ会社のアドレス宛（@より後ろが自分と同じ）のメールはチェックしないので、社内メールは邪魔されません。会社のパソコンに入れる場合は社内ルールに従ってください。確認を求められたときのために、情報システム部門向けの説明資料（全仕様・プライバシーポリシー）を公開しています。" }
+    },
+    {
+      "@type": "Question",
+      "name": "入れた直後は警告が多くなりませんか？",
+      "acceptedAnswer": { "@type": "Answer", "text": "最初の数日は「初めての宛先」の確認が出やすくなります。一度確認した相手には二度と出ないため、1週間ほどで「危ないときだけ止まる」状態になります。" }
     }
   ]
 }
@@ -79,6 +98,8 @@
         --caution: #a85800;
         --caution-bg: #fef7e0;
         --card: #ffffff;
+        --grad-end: #0e7a63;
+        --scene-shadow: rgba(23,43,77,.14);
         --shadow: 0 1px 2px rgba(23,43,77,.06), 0 8px 28px rgba(23,43,77,.09);
         --shadow-lg: 0 2px 6px rgba(23,43,77,.08), 0 24px 60px rgba(23,43,77,.16);
         --radius: 16px;
@@ -103,6 +124,8 @@
             --caution: #fdd663;
             --caution-bg: rgba(249,171,0,.13);
             --card: #202227;
+            --grad-end: #7bd8b8;
+            --scene-shadow: rgba(0,0,0,.5);
             --shadow: 0 1px 2px rgba(0,0,0,.4), 0 10px 32px rgba(0,0,0,.45);
             --shadow-lg: 0 2px 6px rgba(0,0,0,.5), 0 26px 64px rgba(0,0,0,.55);
             --hero-grad: radial-gradient(1100px 520px at 78% -10%, rgba(138,180,248,.10) 0%, rgba(138,180,248,0) 62%),
@@ -118,9 +141,16 @@
     }
     .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
     a { color: var(--accent); }
+    section, .final { scroll-margin-top: 72px; }
 
     /* ---- top bar ---- */
-    .topbar { position: sticky; top: 0; z-index: 10; background: color-mix(in srgb, var(--bg) 82%, transparent); backdrop-filter: blur(12px); border-bottom: 1px solid var(--line); }
+    .topbar {
+        position: sticky; top: 0; z-index: 10;
+        background: var(--bg);
+        background: color-mix(in srgb, var(--bg) 84%, transparent);
+        -webkit-backdrop-filter: blur(12px); backdrop-filter: blur(12px);
+        border-bottom: 1px solid var(--line);
+    }
     .topbar .wrap { display: flex; align-items: center; gap: 10px; height: 60px; }
     .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; }
     .brand img { width: 26px; height: 26px; }
@@ -129,17 +159,19 @@
     .topnav a:hover { color: var(--ink); }
     .topnav .mini-cta { color: var(--on-accent); background: var(--accent); padding: 8px 18px; border-radius: 20px; font-weight: 700; }
     .topnav .mini-cta:hover { background: var(--accent-hover); color: var(--on-accent); }
-    @media (max-width: 720px) { .topnav a:not(.mini-cta) { display: none; } }
+    @media (max-width: 720px) { .topnav a.optional { display: none; } }
 
     /* ---- hero ---- */
-    .hero { background: var(--hero-grad); padding: 72px 0 84px; overflow: hidden; }
+    .hero { background: var(--hero-grad); padding: 64px 0 84px; overflow: hidden; }
     .hero .wrap { display: grid; grid-template-columns: 1.05fr .95fr; gap: 48px; align-items: center; }
-    @media (max-width: 880px) { .hero { padding: 48px 0 64px; } .hero .wrap { grid-template-columns: 1fr; gap: 40px; } }
+    @media (max-width: 880px) { .hero { padding: 44px 0 64px; } .hero .wrap { grid-template-columns: 1fr; gap: 44px; } }
     .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); border-radius: 20px; padding: 5px 14px; letter-spacing: .02em; }
-    h1 { font-size: clamp(30px, 4.6vw, 44px); font-weight: 900; line-height: 1.42; letter-spacing: .01em; margin: 18px 0 14px; font-feature-settings: "palt"; }
-    h1 .grad { background: linear-gradient(92deg, var(--accent) 10%, #12805c 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
-    @media (prefers-color-scheme: dark) { h1 .grad { background: linear-gradient(92deg, #8ab4f8 10%, #81c995 90%); -webkit-background-clip: text; background-clip: text; } }
-    .lede { font-size: 16px; color: var(--muted); margin: 0 0 28px; max-width: 34em; }
+    h1 { font-size: clamp(27px, 4.6vw, 44px); font-weight: 900; line-height: 1.42; letter-spacing: .01em; margin: 18px 0 12px; font-feature-settings: "palt"; }
+    h1 .grad { background: linear-gradient(92deg, var(--accent) 10%, var(--grad-end) 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    @media (max-width: 480px) { br.pc { display: none; } }
+    .lede { font-size: 16px; color: var(--muted); margin: 0 0 14px; max-width: 34em; }
+    .authority-line { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-2); margin: 0 0 26px; }
+    .authority-line svg { width: 16px; height: 16px; fill: var(--ok); flex: none; }
     .cta-row { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; }
     .cta {
         display: inline-flex; align-items: center; gap: 10px;
@@ -152,19 +184,23 @@
     .cta svg { width: 19px; height: 19px; fill: currentColor; }
     .cta-ghost { display: inline-flex; align-items: center; gap: 8px; color: var(--ink-2); text-decoration: none; font-size: 14px; font-weight: 700; padding: 14px 22px; border: 1.5px solid var(--line); border-radius: 30px; }
     .cta-ghost:hover { border-color: var(--muted); color: var(--ink); }
-    .cta-ghost svg { width: 17px; height: 17px; fill: currentColor; }
-    .ctasub { font-size: 12px; color: var(--muted); margin-top: 14px; }
-    .trust-chips { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 24px; }
-    .trust-chips span { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; font-weight: 500; color: var(--ok); background: var(--ok-bg); border-radius: 14px; padding: 4px 13px; }
+    .ctasub { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.9; }
 
-    /* ---- hero: 製品ダイアログのCSSモック ---- */
-    .mock-scene { position: relative; filter: drop-shadow(0 30px 50px rgba(23,43,77,.14)); }
-    .mock-mail {
-        position: absolute; inset: 26px -12px -26px 40px;
-        background: var(--bg-soft); border: 1px solid var(--line); border-radius: 14px;
-        opacity: .8;
+    /* ---- hero: 2状態モック ---- */
+    .mock-scene { position: relative; filter: drop-shadow(0 30px 50px var(--scene-shadow)); }
+    .mock-label { display: inline-block; font-size: 11.5px; font-weight: 700; letter-spacing: .04em; border-radius: 12px; padding: 2px 12px; margin-bottom: 8px; }
+    .mock-label.quiet { color: var(--ok); background: var(--ok-bg); }
+    .mock-label.stop { color: var(--caution); background: var(--caution-bg); }
+    .mock-mini {
+        display: flex; align-items: center; gap: 9px;
+        background: #202124; color: #e8eaed; border-radius: 10px;
+        padding: 11px 16px; font-size: 12.5px; max-width: 400px;
+        box-shadow: var(--shadow);
+        font-family: 'Noto Sans JP', sans-serif;
     }
-    @media (max-width: 880px) { .mock-mail { inset: 22px 6px -18px 24px; } }
+    .mock-mini .ok { color: #81c995; font-weight: 900; }
+    .mock-mini code { font-family: 'SF Mono', Consolas, monospace; font-size: 11.5px; }
+    .mock-quiet { margin-bottom: 22px; }
     .mock {
         position: relative; background: var(--card); border-radius: 18px; overflow: hidden;
         box-shadow: var(--shadow-lg); border: 1px solid var(--line);
@@ -194,9 +230,9 @@
     @media (prefers-reduced-motion: reduce) { .mock-ring { animation: none; } .cta { transition: none; } }
 
     /* ---- sections ---- */
-    section { padding: 76px 0; }
+    section { padding: 72px 0; }
     section.alt { background: var(--bg-soft); }
-    .kicker { font-size: 12.5px; font-weight: 700; color: var(--accent-ink); letter-spacing: .14em; text-transform: uppercase; margin: 0 0 10px; }
+    .kicker { font-size: 12.5px; font-weight: 700; color: var(--accent-ink); letter-spacing: .18em; margin: 0 0 10px; }
     h2 { font-size: clamp(22px, 3vw, 29px); font-weight: 900; line-height: 1.5; margin: 0 0 14px; font-feature-settings: "palt"; }
     .sect-lede { color: var(--muted); max-width: 44em; margin: 0 0 36px; }
 
@@ -206,7 +242,14 @@
     .stat { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 20px 22px; }
     .stat b { display: block; font-size: 24px; font-weight: 900; letter-spacing: .01em; color: var(--ink); }
     .stat b small { font-size: 13px; font-weight: 700; color: var(--muted); margin-left: 2px; }
-    .stat span { font-size: 12.5px; color: var(--muted); }
+    .stat span { font-size: 12.5px; color: var(--muted); line-height: 1.7; display: block; }
+
+    /* ヒヤリ（共感） */
+    .scene-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 26px; }
+    @media (max-width: 780px) { .scene-grid { grid-template-columns: 1fr; } }
+    .scene { background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--caution); border-radius: 12px; padding: 18px 20px; box-shadow: var(--shadow); }
+    .scene p { margin: 0; font-size: 14px; font-weight: 500; line-height: 1.9; }
+    .scene span { display: block; font-size: 12.5px; color: var(--muted); margin-top: 6px; font-weight: 400; }
 
     /* feature grid */
     .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px; }
@@ -247,11 +290,39 @@
     .trust-side p { font-size: 13.5px; color: var(--muted); margin: 0 0 16px; }
     .side-links { display: flex; flex-direction: column; gap: 10px; }
     .side-links a { display: flex; align-items: center; gap: 10px; font-size: 13.5px; font-weight: 700; text-decoration: none; color: var(--accent); background: var(--accent-soft); border-radius: 10px; padding: 11px 14px; }
-    .side-links a:hover { filter: brightness(.97); }
+    .side-links a:hover { filter: brightness(1.05); }
     .side-links svg { width: 16px; height: 16px; fill: currentColor; flex: none; }
+    .tech-note { font-size: 12px; color: var(--muted); margin-top: 14px; line-height: 1.8; }
+
+    /* developer */
+    .dev-card {
+        display: grid; grid-template-columns: auto 1fr; gap: 26px; align-items: start;
+        background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+        box-shadow: var(--shadow); padding: 30px 32px; max-width: 780px;
+    }
+    @media (max-width: 640px) { .dev-card { grid-template-columns: 1fr; } }
+    .dev-avatar {
+        width: 76px; height: 76px; border-radius: 50%;
+        background: linear-gradient(135deg, var(--accent), var(--grad-end));
+        display: flex; align-items: center; justify-content: center;
+    }
+    .dev-avatar svg { width: 38px; height: 38px; fill: #fff; }
+    .dev-card h3 { margin: 0 0 2px; font-size: 17px; }
+    .dev-card .role { font-size: 13px; color: var(--muted); margin: 0 0 12px; }
+    .dev-card p { font-size: 14px; color: var(--ink-2); margin: 0 0 14px; }
+    .dev-links { display: flex; flex-wrap: wrap; gap: 10px; }
+    .dev-links a { font-size: 13px; font-weight: 700; text-decoration: none; color: var(--accent); background: var(--accent-soft); border-radius: 16px; padding: 6px 16px; }
+
+    /* install steps */
+    .install-note { background: var(--card); border: 1px solid var(--line); border-radius: 12px; box-shadow: var(--shadow); padding: 16px 22px; font-size: 13.5px; color: var(--ink-2); margin-top: 20px; max-width: 720px; line-height: 1.9; }
+    .install-note b { color: var(--ink); }
+
+    /* mid cta */
+    .mid-cta { text-align: center; padding: 40px 0 8px; }
+    .mid-cta .ctasub { margin-top: 12px; }
 
     /* FAQ */
-    .faq { max-width: 760px; }
+    .faq { max-width: 760px; margin-inline: auto; }
     details { border: 1px solid var(--line); border-radius: 14px; background: var(--card); box-shadow: var(--shadow); margin-bottom: 12px; overflow: hidden; }
     summary { cursor: pointer; list-style: none; display: flex; align-items: center; gap: 12px; padding: 17px 22px; font-weight: 700; font-size: 15px; }
     summary::-webkit-details-marker { display: none; }
@@ -264,8 +335,8 @@
     .final { text-align: center; padding: 84px 0 92px; background: var(--hero-grad); }
     .final img { width: 64px; height: 64px; margin-bottom: 18px; }
     .final h2 { margin-bottom: 10px; }
-    .final p { color: var(--muted); margin: 0 0 30px; }
-    .callout { max-width: 640px; margin: 40px auto 0; background: var(--caution-bg); color: var(--caution); border-radius: 14px; padding: 15px 22px; font-size: 13.5px; line-height: 1.9; text-align: left; }
+    .final .lead2 { color: var(--muted); margin: 0 auto 14px; max-width: 38em; }
+    .honest { max-width: 560px; margin: 0 auto 28px; font-size: 13px; color: var(--muted); line-height: 1.9; }
 
     footer { border-top: 1px solid var(--line); padding: 34px 0 52px; font-size: 13px; color: var(--muted); }
     footer nav { display: flex; flex-wrap: wrap; gap: 20px; margin-bottom: 16px; }
@@ -280,9 +351,8 @@
         <a class="brand" href="./"><img src="icons/icon48.png" alt="">誤送信ガード <span style="font-weight:500;color:var(--muted)">for Gmail</span></a>
         <nav class="topnav">
             <a href="#features">機能</a>
-            <a href="#trust">安全性</a>
-            <a href="#faq">FAQ</a>
-            <a href="https://github.com/cysecukazch/missend-guard" rel="noopener">GitHub</a>
+            <a href="#trust" class="optional">安全性</a>
+            <a href="#faq" class="optional">FAQ</a>
             <a class="mini-cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">Chrome に追加</a>
         </nav>
     </div>
@@ -291,41 +361,45 @@
 <header class="hero">
     <div class="wrap">
         <div>
-            <span class="eyebrow">✓ 無料・オープンソース・外部送信ゼロ</span>
-            <h1>Gmailの誤送信防止を、<br><span class="grad">静かに、確実に。</span></h1>
-            <p class="lede">宛先の取り違え・アドレスの打ち間違い・BCC忘れを送信前に検知するChrome拡張機能。いつもと違うときだけ警告し、通常の送信は一切邪魔しません。</p>
+            <span class="eyebrow">✓ 無料・登録不要・メールは外に送りません</span>
+            <h1>Gmailの誤送信を、<br class="pc"><span class="grad">静かに防ぐ。</span></h1>
+            <p class="lede">宛先の取り違え・アドレスの打ち間違い・BCC忘れを、送信する<b style="color:var(--ink)">前</b>にお知らせ。いつもと違うときだけ警告し、ふだんの送信は一切邪魔しません。</p>
+            <p class="authority-line"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>セキュリティ入門書の著者が開発。プログラムの中身もすべて公開しています</p>
             <div class="cta-row">
                 <a class="cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">
                     <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
                     Chrome に追加（無料）
                 </a>
-                <a class="cta-ghost" href="https://github.com/cysecukazch/missend-guard" rel="noopener">
-                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.58 2 12.25c0 4.53 2.87 8.37 6.84 9.73.5.09.68-.22.68-.49 0-.24-.01-.89-.01-1.74-2.78.62-3.37-1.37-3.37-1.37-.45-1.18-1.11-1.5-1.11-1.5-.91-.63.07-.62.07-.62 1 .07 1.53 1.06 1.53 1.06.89 1.57 2.34 1.11 2.91.85.09-.66.35-1.11.63-1.37-2.22-.26-4.56-1.14-4.56-5.07 0-1.12.39-2.03 1.03-2.75-.1-.26-.45-1.3.1-2.71 0 0 .84-.28 2.75 1.05a9.36 9.36 0 0 1 5 0c1.91-1.33 2.75-1.05 2.75-1.05.55 1.41.2 2.45.1 2.71.64.72 1.03 1.63 1.03 2.75 0 3.94-2.34 4.8-4.57 5.06.36.32.68.94.68 1.9 0 1.37-.01 2.47-.01 2.81 0 .27.18.59.69.49A10.05 10.05 0 0 0 22 12.25C22 6.58 17.52 2 12 2z"/></svg>
-                    ソースコードを見る
-                </a>
+                <a class="cta-ghost" href="#hiyari">どう防ぐか見る ↓</a>
             </div>
-            <div class="ctasub">Chrome ウェブストアが開きます ・ Microsoft Edge などChromium系ブラウザでも利用できます</div>
+            <div class="ctasub">登録不要・設定不要・30秒で導入完了。不要になればワンクリックで削除できます。<br>※パソコンの Chrome / Microsoft Edge 専用（スマホのGmailアプリでは動きません）</div>
         </div>
         <div class="mock-scene" aria-hidden="true">
-            <div class="mock-mail"></div>
-            <div class="mock">
-                <div class="mock-head">
-                    <span class="sign"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
-                    <div><b>送信前チェック</b><span>1件を確認してください</span></div>
-                </div>
-                <div class="mock-card">
-                    <span class="mock-ico"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
-                    <div class="mock-card-body">
-                        <b>初めての宛先（1件）</b>
-                        <div class="mock-addr"><span class="tag">TO</span>&lt;yamada@sakura-trada.example&gt;</div>
-                        <span class="mock-note">「sakura-trade.example」の打ち間違い？</span>
+            <div class="mock-quiet">
+                <span class="mock-label quiet">ふだんは、これだけ</span>
+                <div class="mock-mini"><span class="ok">✓</span><span><code>taro@customer-a.example</code> に送信しました</span></div>
+            </div>
+            <div>
+                <span class="mock-label stop">危ないときだけ、止まる</span>
+                <div class="mock">
+                    <div class="mock-head">
+                        <span class="sign"><svg viewBox="0 0 24 24"><path d="M1 21h22L12 2 1 21zm12-3h-2v-2h2v2zm0-4h-2v-4h2v4z"/></svg></span>
+                        <div><b>送信前チェック</b><span>1件を確認してください</span></div>
                     </div>
-                    <span class="mock-ring"></span>
-                </div>
-                <div class="mock-foot">
-                    <span class="hint">残り 1件</span>
-                    <span class="mock-btn ghost">戻る</span>
-                    <span class="mock-btn dis">送信</span>
+                    <div class="mock-card">
+                        <span class="mock-ico"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+                        <div class="mock-card-body">
+                            <b>初めての宛先（1件）</b>
+                            <div class="mock-addr"><span class="tag">TO</span>&lt;yamada@sakura-trada.example&gt;</div>
+                            <span class="mock-note">正しくは sakura-trade…？ 1文字違いの打ち間違いかも</span>
+                        </div>
+                        <span class="mock-ring"></span>
+                    </div>
+                    <div class="mock-foot">
+                        <span class="hint">残り 1件</span>
+                        <span class="mock-btn ghost">戻る</span>
+                        <span class="mock-btn dis">送信</span>
+                    </div>
                 </div>
             </div>
         </div>
@@ -334,94 +408,168 @@
 
 <div class="wrap">
     <div class="stats">
-        <div class="stat"><b>0<small>件</small></b><span>外部へのデータ送信（通信コード自体なし）</span></div>
-        <div class="stat"><b>1<small>つ</small></b><span>要求する権限は storage のみ</span></div>
-        <div class="stat"><b>&lt;1<small>ms</small></b><span>送信時の判定速度（実測）</span></div>
-        <div class="stat"><b>MIT</b><span>オープンソース・誰でも検証可能</span></div>
+        <div class="stat"><b>0<small>円</small></b><span>すべての機能がずっと無料・広告なし</span></div>
+        <div class="stat"><b>0<small>件</small></b><span>メールの内容はどこにも送信されません</span></div>
+        <div class="stat"><b>30<small>秒</small></b><span>導入完了。設定は不要です</span></div>
+        <div class="stat"><b>全公開</b><span>プログラムの中身を誰でも確認できます</span></div>
     </div>
 </div>
 
-<section>
+<section id="hiyari">
     <div class="wrap">
-        <p class="kicker">Philosophy</p>
-        <h2>なぜ「毎回確認」では誤送信が防げないのか</h2>
-        <p class="sect-lede">従来の誤送信防止ツールは、送信のたびに全項目の確認を強制します。毎回同じ確認を繰り返すと、確認はただの“クリックの儀式”になり、肝心の一通を素通ししてしまいます。<b style="color:var(--ink)">誤送信ガードは逆の設計です。</b>異常があるときだけ止まるので、確認ダイアログが出ること自体が「何かおかしい」というサインになります。</p>
+        <p class="kicker">こんな経験、ありませんか</p>
+        <h2>気づいたのは、送った後だった。</h2>
+        <div class="scene-grid">
+            <div class="scene"><p>「全員に返信」に、社外の人まで入っていた</p><span>気づいたのは、相手からの返信で。</span></div>
+            <div class="scene"><p>宛先の予測候補で、1つ下の別人を選んでいた</p><span>同じ苗字の、別の会社の方に。</span></div>
+            <div class="scene"><p>BCCのつもりが、全員のアドレスが丸見えに</p><span>一斉送信のたびに、ヒヤッとする。</span></div>
+        </div>
+        <p class="sect-lede" style="margin-bottom:0">誤送信は、うっかり者だけのミスではありません。そして送信ボタンを押した後では、取り消せないことがほとんどです。<b style="color:var(--ink)">誤送信ガードは、その「一通」を送信の前に止めます。</b></p>
+    </div>
+</section>
+
+<section class="alt">
+    <div class="wrap">
+        <p class="kicker">考え方</p>
+        <h2>「本当に送信しますか？」を、読まずに押していませんか。</h2>
+        <p class="sect-lede">毎回出る警告は、3日で景色になります。読まれない確認は、肝心の一通も素通しさせてしまう。<b style="color:var(--ink)">誤送信ガードは逆の設計です。</b>警告が出るのは、本当に危ないときだけ。だから出たときは、手が止まります。</p>
         <div class="steps">
-            <div class="step"><b>いつもの送信は、素通し</b><p>確認済みの宛先だけなら何も出ません。送信の流れを一切妨げず、右下に宛先が小さく表示されるだけです。</p></div>
-            <div class="step"><b>いつもと違うときだけ、停止</b><p>初めての宛先・似すぎたアドレス・BCC忘れなど7種類の異常を検知したときだけ、送信を保留して確認を求めます。</p></div>
-            <div class="step"><b>使うほど、静かになる</b><p>一度確認した宛先は学習され、同じ確認は二度と出ません。数日で「異常のときだけ止まる」状態に収束します。</p></div>
+            <div class="step"><b>いつもの送信は、そのまま</b><p>いつもの相手へのメールは何も出ません。送信後に右下へ宛先が小さく表示されるだけです（上の「ふだんは、これだけ」の画面）。</p></div>
+            <div class="step"><b>いつもと違うときだけ、確認</b><p>初めての宛先・そっくりなアドレス・BCC忘れなど7つの危険を見つけたときだけ、送信を一時停止して確認を求めます。</p></div>
+            <div class="step"><b>使うほど、静かに</b><p>一度確認した相手には二度と聞きません。数日で、警告はほとんど出なくなります。</p></div>
         </div>
     </div>
 </section>
 
-<section class="alt" id="features">
+<section id="features">
     <div class="wrap">
-        <p class="kicker">Features</p>
-        <h2>送信前に検知する7つの異常 — 宛先確認・BCCチェック</h2>
-        <p class="sect-lede">Ctrl+Enter / ⌘+Enter のキーボード送信もすべてチェック。各機能はワンタップでオン/オフでき、判定条件は<a href="help/help.html">ヘルプページで全仕様を公開</a>しています。</p>
+        <p class="kicker">機能</p>
+        <h2>送信前に、7つの危険に気づく</h2>
+        <p class="sect-lede">Gmailの誤送信対策として、宛先確認・BCCチェックなど7種類の検知を自動で行います。キーボードで送信する派の方（Ctrl+Enter）もすり抜けません。各機能はワンタップでオン/オフできます。</p>
         <div class="grid">
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span><b>BCC忘れの防止</b><p>To/Ccに社外アドレスが多数並ぶ一斉送信を、アドレス漏えいの前にストップ。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></span><b>宛先の取り違え検知</b><p>佐藤さんのつもりで斉藤さん、を送信履歴の偏りから検知。既知の相手どうしの取り違えも見逃しません。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></span><b>別会社の混在チェック</b><p>A社宛のメールにB社の人が紛れていないか、初めての組織の組み合わせを確認。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm.01 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg></span><b>typoドメインの警告</b><p>「gmial.com」のような打ち間違いを、過去の宛先・主要プロバイダとの編集距離で指摘。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><b>初めての宛先の確認</b><p>オートコンプリートの選び間違い・打ち間違いに、送信前のその場で気づけます。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><b>宛名と宛先の不一致</b><p>本文は「佐藤様」なのに宛先に佐藤さんがいない。異体字（斉/斎/齋）・ローマ字アドレスにも対応。</p></div>
-            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg></span><b>スレッドの新顔検知</b><p>同じ件名のやり取りに、過去にいなかった宛先が加わったときに確認。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M16 11c1.66 0 2.99-1.34 2.99-3S17.66 5 16 5c-1.66 0-3 1.34-3 3s1.34 3 3 3zm-8 0c1.66 0 2.99-1.34 2.99-3S9.66 5 8 5C6.34 5 5 6.34 5 8s1.34 3 3 3zm0 2c-2.33 0-7 1.17-7 3.5V19h14v-2.5c0-2.33-4.67-3.5-7-3.5zm8 0c-.29 0-.62.02-.97.05 1.16.84 1.97 1.97 1.97 3.45V19h6v-2.5c0-2.33-4.67-3.5-7-3.5z"/></svg></span><b>BCC忘れの防止</b><p>宛先欄に社外のアドレスがたくさん並んだ一斉送信を、アドレス丸見えの事故になる前にストップ。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M6.99 11L3 15l3.99 4v-3H14v-2H6.99v-3zM21 9l-3.99-4v3H10v2h7.01v3L21 9z"/></svg></span><b>宛先の取り違えに気づく</b><p>佐藤さんのつもりで斉藤さんに——ふだんの送信相手の傾向から、取り違えの可能性を見つけます。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M12 7V3H2v18h20V7H12zM6 19H4v-2h2v2zm0-4H4v-2h2v2zm0-4H4V9h2v2zm0-4H4V5h2v2zm4 12H8v-2h2v2zm0-4H8v-2h2v2zm0-4H8V9h2v2zm0-4H8V5h2v2zm10 12h-8v-2h2v-2h-2v-2h2v-2h-2V9h8v10zm-2-8h-2v2h2v-2zm0 4h-2v2h2v-2z"/></svg></span><b>別の会社の混在チェック</b><p>A社宛のメールに、B社の担当者が紛れていないか。初めての組み合わせのときに確認します。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M11 15h2v2h-2zm0-8h2v6h-2zm.99-5C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zm.01 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/></svg></span><b>アドレスの打ち間違いを警告</b><p>「gmial.com」のような、1〜2文字だけ違うそっくりアドレスをその場で指摘します。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M15 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm-9-2V7H4v3H1v2h3v3h2v-3h3v-2H6zm9 4c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><b>初めての宛先を確認</b><p>宛先の予測候補の選び間違いに、送信前のその場で気づけます。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span><b>宛名と宛先のズレを検知</b><p>本文は「佐藤様」なのに、宛先に佐藤さんがいない。旧字体（斉/斎/齋）やローマ字アドレスにも対応。</p></div>
+            <div class="card"><span class="fico"><svg viewBox="0 0 24 24"><path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm0 14H5.17L4 17.17V4h16v12z"/></svg></span><b>やり取りの「新顔」に気づく</b><p>同じ件名のやり取りに、これまでいなかった宛先が急に加わったときに確認します。</p></div>
         </div>
     </div>
 </section>
 
-<section id="trust">
+<section class="alt" id="trust">
     <div class="wrap">
-        <p class="kicker">Privacy &amp; Trust</p>
-        <h2>メールを扱う拡張機能だからこそ、検証できる信頼を</h2>
+        <p class="kicker">安全性</p>
+        <h2>メールを扱う道具だからこそ、隠しごとをしない</h2>
         <p class="sect-lede">「安全です」と言うだけでなく、誰でも確かめられる形で公開しています。</p>
         <div class="trust-grid">
             <ul class="checklist">
-                <li><span class="ok">✓</span><div><b>外部送信ゼロ</b><span class="d">開発者にも第三者にも、データは送りません。そもそも外部と通信するコードを含みません。</span></div></li>
-                <li><span class="ok">✓</span><div><b>最小権限</b><span class="d">要求する権限は「storage（保存）」だけ。動作は mail.google.com 上のみ。</span></div></li>
-                <li><span class="ok">✓</span><div><b>オープンソース（MIT License）</b><span class="d">全コードをGitHubで公開。中身は誰でも検証できます。</span></div></li>
-                <li><span class="ok">✓</span><div><b>軽量設計</b><span class="d">注入コード約113KB・依存ライブラリゼロ・常駐プロセスなし。送信時の判定は実測1ミリ秒未満。</span></div></li>
-                <li><span class="ok">✓</span><div><b>データは手元に</b><span class="d">学習した宛先履歴は利用者自身のChrome内にのみ保存。いつでも個別削除・全消去できます。</span></div></li>
+                <li><span class="ok">✓</span><div><b>メールの内容も宛先も、どこにも送りません</b><span class="d">開発者にも見えません。外部と通信する仕組み自体が入っていません。</span></div></li>
+                <li><span class="ok">✓</span><div><b>データは全部、あなたのパソコンの中</b><span class="d">学習した宛先の記録はあなたのChromeの中だけ。いつでも個別に削除・全消去できます。</span></div></li>
+                <li><span class="ok">✓</span><div><b>求める権限は最小限</b><span class="d">「保存」の許可（storage権限）だけ。動くのはGmailの画面上だけで、他のサイトには一切ノータッチです。</span></div></li>
+                <li><span class="ok">✓</span><div><b>プログラムの中身を全世界に公開</b><span class="d">隠しごとができない仕組み（オープンソース・MIT License）。中身は誰でも検証できます。</span></div></li>
+                <li><span class="ok">✓</span><div><b>Chromeを重くしません</b><span class="d">待機中の負荷はゼロ。送信時のチェックは一瞬（実測1ミリ秒未満）で終わります。</span></div></li>
             </ul>
             <div class="trust-side">
-                <h3>会社での導入にも</h3>
-                <p>外部送信なし・最小権限・全仕様公開のため、情報システム部門にも説明しやすい構成です。判定条件の詳細やプライバシーの取り扱いは、以下ですべて公開しています。</p>
+                <h3>会社での導入・情シスの方へ</h3>
+                <p>判定条件の全仕様・プライバシーの取り扱い・ソースコードをすべて公開しています。導入判断にそのままお使いください。</p>
                 <div class="side-links">
-                    <a href="help/help.html"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>機能の詳細仕様（全公開）</a>
-                    <a href="store-assets/privacy.html"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>プライバシーポリシー</a>
-                    <a href="https://github.com/cysecukazch/missend-guard" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>ソースコード（GitHub）</a>
+                    <a href="help/help.html" target="_blank"><svg viewBox="0 0 24 24"><path d="M14 2H6c-1.1 0-1.99.9-1.99 2L4 20c0 1.1.89 2 1.99 2H18c1.1 0 2-.9 2-2V8l-6-6zm2 16H8v-2h8v2zm0-4H8v-2h8v2zm-3-5V3.5L18.5 9H13z"/></svg>機能の詳細仕様（全公開）</a>
+                    <a href="store-assets/privacy.html" target="_blank"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>プライバシーポリシー</a>
+                    <a href="https://github.com/cysecukazch/missend-guard" target="_blank" rel="noopener"><svg viewBox="0 0 24 24"><path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/></svg>ソースコード（GitHub）</a>
+                </div>
+                <p class="tech-note">技術情報: Manifest V3／権限は storage のみ／注入コード約113KB・依存ライブラリなし／常駐プロセスなし</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="developer">
+    <div class="wrap">
+        <p class="kicker">開発者</p>
+        <h2>セキュリティの専門家が、自分のために作りました</h2>
+        <div class="dev-card">
+            <span class="dev-avatar"><svg viewBox="0 0 24 24"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg></span>
+            <div>
+                <h3>ハッカーかず（セキュリティ専門家）</h3>
+                <p class="role">情報セキュリティ入門書『社会人1年生の情報セキュリティ 超入門』著者。YouTube・テレビ・ラジオ・講演などで、セキュリティをやさしく解説しています。</p>
+                <p>メール誤送信の相談を受けるたびに「送る前に、機械が気づくべきだ」と考え、自分が毎日使うために作りました。セキュリティ教育活動の一環として、無料で公開しています。</p>
+                <div class="dev-links">
+                    <a href="https://note.com/hacker_kaz" target="_blank" rel="noopener">プロフィール（note）</a>
                 </div>
             </div>
         </div>
     </div>
 </section>
 
-<section class="alt" id="faq">
+<section class="alt" id="install">
+    <div class="wrap">
+        <p class="kicker">導入方法</p>
+        <h2>使い始めるまで、30秒</h2>
+        <div class="steps">
+            <div class="step"><b>「Chromeに追加」を押す</b><p>Chromeウェブストア（Googleが運営する公式の配布サイト）が開きます。</p></div>
+            <div class="step"><b>「拡張機能を追加」を押す</b><p>確認画面で追加ボタンを押せばインストール完了です。登録や支払いはありません。</p></div>
+            <div class="step"><b>おわり。あとはいつも通り</b><p>設定は不要です。Gmailのタブを開き直せば、その送信から守り始めます。</p></div>
+        </div>
+        <div class="install-note">
+            <b>最初の数日について：</b>初めのうちは「初めての宛先」の確認が出やすくなっています。一度確認した相手には二度と出ないので、1週間ほどで「危ないときだけ止まる」静かな状態になります。<br>
+            <b>やめたくなったら：</b>ワンクリックで削除でき、保存されたデータも一緒に消えます。
+        </div>
+        <div class="mid-cta">
+            <a class="cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                Chrome に追加（無料）
+            </a>
+            <div class="ctasub">登録不要・いつでも削除できます</div>
+        </div>
+    </div>
+</section>
+
+<section id="faq">
     <div class="wrap">
         <p class="kicker">FAQ</p>
-        <h2>よくある質問 — Gmailの誤送信対策</h2>
+        <h2 style="text-align:center">よくある質問</h2>
         <div class="faq" style="margin-top:32px">
             <details open>
                 <summary>Gmailの誤送信を防止するには？</summary>
-                <div class="a">Gmail標準の「送信取り消し」を30秒に設定したうえで、送信前に宛先を検査する拡張機能を併用するのが現実的です。誤送信ガードは、初めての宛先・よく似たアドレス（編集距離2以内のtypo検知）・BCC忘れなど7種類の異常を送信前に検知し、異常があるときだけ確認を求めます。</div>
+                <div class="a">送信の“前”に宛先を点検する仕組みを入れるのが確実です。誤送信ガードは、初めての宛先・1〜2文字だけ違うそっくりアドレス・BCC忘れなど7種類の危険を送信前に検知し、危ないときだけ確認を求めます。あわせてGmail標準の「送信取り消し」（歯車 → すべての設定 → 30秒に変更）を設定しておくと、二重の備えになります。</div>
             </details>
             <details>
-                <summary>無料で使えますか？</summary>
-                <div class="a">はい。全機能が無料で、課金・広告・アカウント登録は一切ありません（MIT License のオープンソース）。</div>
+                <summary>Gmailの「送信取り消し」があれば十分では？</summary>
+                <div class="a">送信取り消しで取り消せるのは<b>送信後最大30秒、しかも自分でミスに気づけた場合だけ</b>です。誤送信の多くは、相手からの返信で初めて発覚します。だからこそ、送信の“前”に気づける仕組みとの併用が有効です。</div>
+            </details>
+            <details>
+                <summary>なぜ無料なのですか？</summary>
+                <div class="a">セキュリティ教育活動の一環として公開しているためです。開発者自身が毎日使う道具であり、課金・広告・データ販売による収益化は行いません。プログラムの中身をすべて公開しているので、その気になれば誰でも確かめられます。</div>
             </details>
             <details>
                 <summary>メールの内容は外部に送信されますか？</summary>
-                <div class="a">されません。学習した宛先履歴は利用者自身のChrome内（chrome.storage.local）にのみ保存され、設定により同じGoogleアカウントのChrome同期（別PCへの引き継ぎ）だけに載ります。詳細は<a href="store-assets/privacy.html">プライバシーポリシー</a>をご覧ください。</div>
+                <div class="a">されません。メールの内容も宛先も、どこにも送りません（開発者にも見えません）。学習した宛先の記録は、あなたのパソコンのChromeの中だけに保存されます。詳しくは<a href="store-assets/privacy.html" target="_blank">プライバシーポリシー</a>をご覧ください。</div>
+            </details>
+            <details>
+                <summary>スマホでも使えますか？</summary>
+                <div class="a">いいえ、パソコンの Chrome / Microsoft Edge 専用です。スマホのGmailアプリでは動作しません。</div>
             </details>
             <details>
                 <summary>会社のGmail（Google Workspace）でも使えますか？</summary>
-                <div class="a">使えます。自社ドメイン宛（Fromと同じドメイン）はチェックされないため、社内の気軽なメールは邪魔されません。</div>
+                <div class="a">使えます。同じ会社のアドレス宛（@より後ろが自分と同じ）のメールはチェックしないので、社内メールは邪魔されません。会社のパソコンに入れる場合は社内ルールに従ってください。確認を求められたときのために、<a href="help/help.html" target="_blank">情報システム部門向けの説明資料（全仕様）</a>を公開しています。</div>
             </details>
             <details>
-                <summary>既存の誤送信防止拡張と何が違いますか？</summary>
-                <div class="a">「毎回全項目を確認」ではなく「異常があるときだけ確認」する点です。加えて、Ctrl+Enter/⌘+Enterのキーボード送信もすり抜けないこと、送信実績のある宛先どうしの取り違えまで検知すること、データを一切外部送信しないことが設計上の違いです。</div>
+                <summary>入れた直後は警告が多くなりませんか？</summary>
+                <div class="a">最初の数日は「初めての宛先」の確認が出やすくなります。一度確認した相手には二度と出ないため、1週間ほどで「危ないときだけ止まる」状態になります。</div>
             </details>
+            <details>
+                <summary>ほかの誤送信防止の拡張機能と何が違いますか？</summary>
+                <div class="a">「毎回すべて確認」ではなく「危ないときだけ確認」する点です。加えて、キーボード送信（Ctrl+Enter）もすり抜けないこと、送信したことのある相手どうしの取り違えまで検知すること、データを一切外部に送らないことが設計上の違いです。</div>
+            </details>
+        </div>
+        <div class="mid-cta">
+            <div class="ctasub" style="margin-bottom:10px">疑問が解けたら、試すのは30秒です。</div>
+            <a class="cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">
+                <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
+                Chrome に追加（無料）
+            </a>
         </div>
     </div>
 </section>
@@ -429,13 +577,14 @@
 <div class="final">
     <div class="wrap">
         <img src="icons/icon128.png" alt="">
-        <h2>大切なメールを、今日から守る</h2>
-        <p>設定は不要。インストールした瞬間から、静かに働き始めます。</p>
+        <h2>誤送信は、起きてからでは取り消せない。</h2>
+        <p class="lead2">宛先の学習は、入れた日から始まります。今日入れれば、今日の送信から。次の一通が事故になる前に。</p>
+        <p class="honest">公開したばかりの新しい拡張機能で、レビューはまだ集まっていません。だからこそ判定の仕組みもプログラムの中身もすべて公開し、宣伝ではなく中身で判断していただける状態にしています。</p>
         <a class="cta" href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm5 11h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/></svg>
             Chrome に追加（無料）
         </a>
-        <div class="callout">💡 <b>まずはGmail側の設定も：</b>歯車アイコン →「すべての設定を表示」→「送信取り消し」を<b>30秒</b>に変更しておくと、誤送信ガードと合わせて二重の備えになります。</div>
+        <div class="ctasub">登録不要・設定不要・いつでも削除できます</div>
     </div>
 </div>
 
@@ -443,10 +592,11 @@
     <div class="wrap">
         <nav>
             <a href="https://chromewebstore.google.com/detail/agjedfmihjheaajoodnfonhmfmjkmoio" rel="noopener">Chrome ウェブストア</a>
-            <a href="https://github.com/cysecukazch/missend-guard" rel="noopener">GitHub（ソースコード）</a>
-            <a href="help/help.html">機能の詳細仕様</a>
-            <a href="store-assets/privacy.html">プライバシーポリシー</a>
-            <a href="https://github.com/cysecukazch/missend-guard/issues" rel="noopener">要望・不具合の報告</a>
+            <a href="https://github.com/cysecukazch/missend-guard" target="_blank" rel="noopener">GitHub（ソースコード）</a>
+            <a href="help/help.html" target="_blank">機能の詳細仕様</a>
+            <a href="store-assets/privacy.html" target="_blank">プライバシーポリシー</a>
+            <a href="https://github.com/cysecukazch/missend-guard/issues" target="_blank" rel="noopener">要望・不具合の報告</a>
+            <a href="https://note.com/hacker_kaz" target="_blank" rel="noopener">開発者について</a>
         </nav>
         <div>誤送信ガード for Gmail（Missend Guard for Gmail）／ MIT License<br>
         Gmail は Google LLC の商標です。本拡張機能は Google によって承認・提携されたものではありません。</div>
