@@ -161,14 +161,29 @@
         border-bottom: 1px solid var(--line);
     }
     .topbar .wrap { display: flex; align-items: center; gap: 10px; height: 60px; }
-    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; }
-    .brand img { width: 26px; height: 26px; }
-    .topnav { margin-left: auto; display: flex; align-items: center; gap: 20px; font-size: 13.5px; }
-    .topnav a { color: var(--muted); text-decoration: none; font-weight: 500; }
+    .brand { display: flex; align-items: center; gap: 10px; font-weight: 700; font-size: 15px; color: var(--ink); text-decoration: none; white-space: nowrap; min-width: 0; }
+    .brand img { width: 26px; height: 26px; flex: none; }
+    .topnav { margin-left: auto; display: flex; align-items: center; gap: 20px; font-size: 13.5px; flex: none; }
+    .topnav a { color: var(--muted); text-decoration: none; font-weight: 500; white-space: nowrap; }
     .topnav a:hover { color: var(--ink); }
     .topnav .mini-cta { color: var(--on-accent); background: var(--accent); padding: 8px 18px; border-radius: 20px; font-weight: 700; }
     .topnav .mini-cta:hover { background: var(--accent-hover); color: var(--on-accent); }
     @media (max-width: 720px) { .topnav a.optional { display: none; } }
+    @media (max-width: 480px) {
+        .topbar .wrap { gap: 8px; padding: 0 14px; }
+        .brand { font-size: 13px; gap: 7px; }
+        .brand img { width: 22px; height: 22px; }
+        .topnav { gap: 12px; font-size: 12.5px; }
+        .topnav .mini-cta { padding: 7px 12px; }
+    }
+    @media (max-width: 350px) {
+        .topbar .wrap { gap: 6px; padding: 0 10px; }
+        .brand { font-size: 12px; gap: 5px; }
+        .brand img { width: 20px; height: 20px; }
+        .topnav { gap: 8px; font-size: 11.5px; }
+        .topnav .mini-cta { padding: 6px 10px; }
+        .hero .eyebrow { font-size: 11px; letter-spacing: 0; }
+    }
 
     /* ---- hero ---- */
     .hero { background: var(--hero-grad); padding: 64px 0 84px; overflow: hidden; }
@@ -176,7 +191,8 @@
     @media (max-width: 880px) { .hero { padding: 44px 0 64px; } .hero .wrap { grid-template-columns: 1fr; gap: 44px; } }
     .eyebrow { display: inline-flex; align-items: center; gap: 8px; font-size: 12.5px; font-weight: 700; color: var(--accent-ink); background: var(--accent-soft); border-radius: 20px; padding: 5px 14px; letter-spacing: .02em; }
     h1 { font-size: clamp(27px, 4.6vw, 44px); font-weight: 900; line-height: 1.42; letter-spacing: .01em; margin: 18px 0 12px; font-feature-settings: "palt"; }
-    h1 .grad { background: linear-gradient(92deg, var(--accent) 10%, var(--grad-end) 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    h1 .grad { display: inline-block; background: linear-gradient(92deg, var(--accent) 10%, var(--grad-end) 90%); -webkit-background-clip: text; background-clip: text; color: transparent; }
+    h1 .nb { display: inline-block; }
     @media (max-width: 480px) { br.pc { display: none; } }
     .lede { font-size: 16px; color: var(--muted); margin: 0 0 14px; max-width: 34em; }
     .authority-line { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; color: var(--ink-2); margin: 0 0 26px; }
@@ -378,7 +394,7 @@
     <div class="wrap">
         <div>
             <span class="eyebrow">✓ 無料・登録不要・メールは外に送りません</span>
-            <h1>Gmailの誤送信を、<br class="pc"><span class="grad">静かに防ぐ。</span></h1>
+            <h1><span class="nb">Gmailの誤送信を、</span><br class="pc"><span class="grad">静かに防ぐ。</span></h1>
             <p class="lede">宛先の取り違え・アドレスの打ち間違い・BCC忘れを、送信する<b style="color:var(--ink)">前</b>にお知らせ。いつもと違うときだけ警告し、ふだんの送信は一切邪魔しません。</p>
             <p class="authority-line"><svg viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm-2 16l-4-4 1.41-1.41L10 14.17l6.59-6.59L18 9l-8 8z"/></svg>セキュリティ入門書の著者が開発。プログラムの中身もすべて公開しています</p>
             <div class="cta-row">

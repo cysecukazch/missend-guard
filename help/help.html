@@ -2,6 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>誤送信ガード ─ 機能の詳細仕様</title>
 <style>
     * { box-sizing: border-box; font-family: 'Google Sans', Roboto, 'Hiragino Sans', 'Noto Sans JP', Meiryo, sans-serif; }
@@ -31,6 +32,7 @@
         font-family: 'Roboto Mono', Consolas, monospace; font-size: .86em;
         background: #f1f3f4; padding: 1px 6px; border-radius: 5px;
     }
+    .tablewrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
     table { border-collapse: collapse; width: 100%; font-size: 13px; margin: 10px 0; }
     th, td { border: 1px solid #e0e0e0; padding: 7px 12px; text-align: left; vertical-align: top; }
     th { background: #f8f9fa; font-weight: 500; color: #5f6368; white-space: nowrap; }
@@ -51,7 +53,17 @@
     .dict span { font-family: 'Roboto Mono', Consolas, monospace; color: #5f6368; font-size: 11.5px; }
     .top { font-size: 12px; }
     .top a { color: #1a73e8; text-decoration: none; }
-    @media (max-width: 560px) { nav { column-count: 1; } .dict { column-count: 2; } }
+    @media (max-width: 560px) {
+        .wrap { padding: 24px 16px 48px; }
+        nav { column-count: 1; padding: 12px 16px; }
+        .dict { column-count: 2; column-gap: 16px; }
+        h1 { font-size: 18px; }
+        table { font-size: 12.5px; }
+        th, td { padding: 6px 8px; }
+        code { overflow-wrap: anywhere; }
+        .chips span { overflow-wrap: anywhere; }
+        p, li { overflow-wrap: break-word; }
+    }
 </style>
 </head>
 <body>
@@ -91,7 +103,7 @@
         <li>確認した内容は端末内に記憶され、同じ確認は二度と出ません（下表「一度だけ」の機能）</li>
         <li>ダイアログの表示と学習以外の動作は一切ありません。外部への通信もありません</li>
     </ul>
-    <table>
+    <div class="tablewrap"><table>
         <tr><th>機能</th><th>確認の頻度</th></tr>
         <tr><td>1. 初めての宛先</td><td>宛先ごとに一度だけ</td></tr>
         <tr><td>3. 普段と違う宛先</td><td>アドレスのペアごとに一度だけ</td></tr>
@@ -99,7 +111,7 @@
         <tr><td>5. 件名スレッドの新しい宛先</td><td>スレッド×宛先ごとに一度だけ</td></tr>
         <tr><td>6. 組織の組み合わせ</td><td>組み合わせごとに一度だけ</td></tr>
         <tr><td>7. BCC の提案</td><td>該当するたび（学習しない）</td></tr>
-    </table>
+    </table></div>
 
     <h3 id="behavior">0-1. 送信の横取りとダイアログ</h3>
     <ul>
@@ -120,7 +132,7 @@
 
     <h2 id="lookalike">2. 似たアドレスを警告（注記） <span class="pill">1の付随情報</span></h2>
     <p>「初めての宛先」の各行に、以下の注記が付くことがあります。この機能単体でダイアログが増えることはありません。</p>
-    <table>
+    <div class="tablewrap"><table>
         <tr><th>注記</th><th>正確な条件</th></tr>
         <tr>
             <td>初めてのドメイン</td>
@@ -138,7 +150,7 @@
                 ① 同一ドメインで、@より前が3文字以上、編集距離が「6文字以上なら2以内・5文字以下なら1以内」<br>
                 ② ドメインが違う場合、アドレス全体が8文字以上で編集距離2以内</td>
         </tr>
-    </table>
+    </table></div>
     <p class="muted">編集距離 = 1文字の挿入・削除・置換の最小回数。<code>gmial.com</code>→<code>gmail.com</code> は 2（入替）、<code>sato</code>→<code>saito</code> は 1。</p>
 
     <h2 id="known">3. 普段と違う宛先を警告 <span class="pill">一度だけ</span></h2>
@@ -224,7 +236,7 @@
     </ul>
 
     <h2 id="storage">9. 学習データとプライバシー</h2>
-    <table>
+    <div class="tablewrap"><table>
         <tr><th>保存するもの</th><th>内容</th><th>上限</th></tr>
         <tr><td>確認済みの宛先</td><td>アドレス・表示名・送信回数・最終送信日時</td><td>3,000件</td></tr>
         <tr><td>確認済みのドメイン</td><td>ドメイン・回数</td><td>—（無制限。<a href="#lookalike">2</a> の照合対象のため削除しません）</td></tr>
@@ -233,7 +245,7 @@
         <tr><td>宛名の確認</td><td>宛名×アドレスの組</td><td>1,000件</td></tr>
         <tr><td>件名スレッド</td><td>件名のハッシュとメンバー（件名の文字列は保存しない）</td><td>500件</td></tr>
         <tr><td>統計</td><td>送信回数・ダイアログ表示回数</td><td>—</td></tr>
-    </table>
+    </table></div>
     <ul>
         <li>上限のある項目は、超えると古いものから自動削除されます</li>
         <li>保存先は <code>chrome.storage.local</code>（この端末の Chrome 内）。要求する権限は <code>storage</code> だけです</li>
@@ -260,7 +272,7 @@
     </ul>
 
     <h2 id="perf">10. パフォーマンス（Chrome を重くしない設計）</h2>
-    <table>
+    <div class="tablewrap"><table>
         <tr><th>項目</th><th>実装</th></tr>
         <tr><td>常駐プロセス</td><td><b>なし。</b>background（Service Worker）を持たず、Gmail のタブを閉じれば何も残りません</td></tr>
         <tr><td>動作するページ</td><td><code>https://mail.google.com/*</code> のみ。他のサイト・Chrome 本体には一切読み込まれません</td></tr>
@@ -270,7 +282,7 @@
         <tr><td>クリックごとの処理</td><td>「送信ボタンか？」の判定のみ（数マイクロ秒）。送信ボタン以外では即座に抜けます</td></tr>
         <tr><td>送信時の判定</td><td>宛先読み取り＋リスク判定で実測 1ms 未満。極端に長い入力に対しても処理量の上限ガードを設けています</td></tr>
         <tr><td>メモリ</td><td>コード＋履歴キャッシュ（上限まで使っても数百KB程度）のみ</td></tr>
-    </table>
+    </table></div>
 
     <h2 id="limits">11. 既知の制限</h2>
     <ul>
